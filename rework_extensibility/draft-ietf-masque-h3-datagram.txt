@@ -5,8 +5,8 @@
 MASQUE                                                       D. Schinazi
 Internet-Draft                                                Google LLC
 Intended status: Standards Track                               L. Pardue
-Expires: 14 March 2022                                        Cloudflare
-                                                       10 September 2021
+Expires: 24 March 2022                                        Cloudflare
+                                                       20 September 2021
 
 
                        Using Datagrams with HTTP
@@ -51,7 +51,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 14 March 2022.
+   This Internet-Draft will expire on 24 March 2022.
 
 Copyright Notice
 
@@ -174,17 +174,18 @@ Table of Contents
    registration capsule, see Section 4.4.1 and Section 4.4.2.  This type
    identifier is registered with IANA (see Section 8.3) and allows
    applications that use HTTP Datagrams to indicate what the content of
-   datagrams are.  Registration capsules carry a Datagram Format Data
-   field which allows sending some additional information that would
-   impact the format of datagrams.
+   datagrams are.  Registration capsules carry a Datagram Format
+   Additional Data field which allows sending some additional
+   information that would impact the format of datagrams.
 
    For example, a protocol which proxies IP packets can define a
    Datagram Format Type which represents an IP packet.  The
-   corresponding Datagram Format Data field would be empty.  An
-   extension to such a protocol that wishes to compress IP addresses
+   corresponding Datagram Format Additional Data field would be empty.
+   An extension to such a protocol that wishes to compress IP addresses
    could define a distinct Datagram Format Type and exchange two IP
-   addresses via the Datagram Format Data field.  Then any datagrams
-   with that type would contain the IP packet with addresses elided.
+   addresses via the Datagram Format Additional Data field.  Then any
+   datagrams with that type would contain the IP packet with addresses
+   elided.
 
 2.3.  Context ID Allocation
 
@@ -393,7 +394,7 @@ Table of Contents
    REGISTER_DATAGRAM_CONTEXT Capsule {
      Context ID (i),
      Datagram Format Type (i),
-     Datagram Format Data (..),
+     Datagram Format Additional Data (..),
    }
 
              Figure 4: REGISTER_DATAGRAM_CONTEXT Capsule Format
@@ -404,9 +405,9 @@ Table of Contents
       semantics and encoding of the HTTP Datagram Payload field of
       datagrams with this context ID, see Section 2.2.
 
-   Datagram Format Data:  This field carries additional information that
-      impact the format of datagrams with this context ID, see
-      Section 2.2.
+   Datagram Format Additional Data:  This field carries additional
+      information that impact the format of datagrams with this context
+      ID, see Section 2.2.
 
    Note that these registrations are unilateral and bidirectional: the
    sender of the frame unilaterally defines the semantics it will apply
@@ -459,7 +460,7 @@ Table of Contents
 
    REGISTER_DATAGRAM_NO_CONTEXT Capsule {
      Datagram Format Type (i),
-     Datagram Format Data (..),
+     Datagram Format Additional Data (..),
    }
 
            Figure 5: REGISTER_DATAGRAM_NO_CONTEXT Capsule Format
@@ -468,8 +469,8 @@ Table of Contents
       semantics and encoding of the HTTP Datagram Payload field of
       datagrams, see Section 2.2.
 
-   Datagram Format Data:  This field carries additional information that
-      impact the format of datagrams, see Section 2.2.
+   Datagram Format Additional Data:  This field carries additional
+      information that impact the format of datagrams, see Section 2.2.
 
    Note that this registration is unilateral and bidirectional: the
    client unilaterally defines the semantics it will apply to the
@@ -893,7 +894,7 @@ A.1.  CONNECT-UDP
      Capsule Type = REGISTER_DATAGRAM_CONTEXT
      Context ID = 0
      Datagram Format Type = UDP_PAYLOAD
-     Datagram Format Data = ""
+     Datagram Format Additional Data = ""
 
    DATAGRAM                        -------->
      Quarter Stream ID = 11
@@ -924,7 +925,7 @@ A.2.  CONNECT-UDP with Timestamp Extension
      Capsule Type = REGISTER_DATAGRAM_CONTEXT
      Context ID = 0
      Datagram Format Type = UDP_PAYLOAD
-     Datagram Format Data = ""
+     Datagram Format Additional Data = ""
 
    DATAGRAM                       -------->
      Quarter Stream ID = 11
@@ -946,7 +947,7 @@ A.2.  CONNECT-UDP with Timestamp Extension
      Capsule Type = REGISTER_DATAGRAM_CONTEXT
      Context ID = 2
      Datagram Format Type = UDP_PAYLOAD_WITH_TIMESTAMP
-     Datagram Format Data = ""
+     Datagram Format Additional Data = ""
 
    DATAGRAM                       -------->
      Quarter Stream ID = 11
@@ -972,7 +973,7 @@ A.3.  CONNECT-IP with IP compression
      Capsule Type = REGISTER_DATAGRAM_CONTEXT
      Context ID = 0
      Datagram Format Type = IP_PACKET
-     Datagram Format Data = ""
+     Datagram Format Additional Data = ""
 
    DATAGRAM                       -------->
      Quarter Stream ID = 11
@@ -995,7 +996,7 @@ A.3.  CONNECT-IP with IP compression
      Capsule Type = REGISTER_DATAGRAM_CONTEXT
      Context ID = 2
      Datagram Format Type = COMPRESSED_IP_PACKET
-     Datagram Format Data = "192.0.2.6,192.0.2.7"
+     Datagram Format Additional Data = "192.0.2.6,192.0.2.7"
 
    DATAGRAM                       -------->
      Quarter Stream ID = 11
@@ -1017,7 +1018,7 @@ A.4.  WebTransport
    STREAM(44): DATA                -------->
      Capsule Type = REGISTER_DATAGRAM_NO_CONTEXT
      Datagram Format Type = WEBTRANSPORT_DATAGRAM
-     Datagram Format Data = ""
+     Datagram Format Additional Data = ""
 
               <--------  STREAM(44): HEADERS
                            :status = 200
