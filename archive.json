@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2021-09-19T01:05:09.599210+00:00",
+  "timestamp": "2021-09-21T01:05:40.030148+00:00",
   "repo": "ietf-wg-masque/draft-ietf-masque-h3-datagram",
   "labels": [
     {
@@ -1642,15 +1642,15 @@
       "id": "MDU6SXNzdWU5NDM1Mjc1OTc=",
       "title": "How to actually use the Context ID registrations mechanism",
       "url": "https://github.com/ietf-wg-masque/draft-ietf-masque-h3-datagram/issues/66",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "gloinul",
       "authorAssociation": "NONE",
       "assignees": [],
       "labels": [],
       "body": "Sent to the WG mailing list. \r\n\r\nI and my co-authors on https://datatracker.ietf.org/doc/draft-kuehlewind-masque-connect-ip/ have had some discussion around how one actually can and should be using the context-ID registration mechanism. This as we are actually need it to realize some of the functionality in our CONNECT-IP solution. \r\n\r\nWe have found several ways that appear to practically work from an CONNECT-IP application perspective. \r\n\r\nA)\tStatically define that in the context of CONNECT-IP the application will map certain formats to certain ContextID, and simply send registrations without any extension headers. \r\nB)\tDefine a Context Extension that is intended to provide format identifiers for the CONNECT-IP method different formats. \r\nC)\tUse values or parameters in HTTP headers related to the format to carry the identifiers.\r\nD)\tCombine A and B, so that we have a set of initially statically defined mappings, and then use Context Extension for any future extensions. \r\n\r\nIn our discussion we see that C appears to have some potential for failure modes if an HTTP intermediary does things with the headers. \r\n\r\nA) is very straight forward for an application initially but can run into trouble when needing to be extended but HTTP level negotiation of the general functionality should resolve those. \r\n\r\nB) appears to have some overhead from an application perspective as each application needs to define its own Context Extension to carry identifiers. Is it really intended that each HTTP application that needs to convey some identifier for its Context ID format to carry across the HTTP Datagram capsule. Would there be a point in defining a Context Extension that carries format identifier for what one like to use this context ID. \r\n\r\nD) appears to be simple initially, but leads to the extension mechanism having code paths that would not be exercised by default\r\n\r\nSo this was basically to start a discussion to see if we can get a bit more clearer guidance towards the HTTP application writers that will attempt to use HTTP Datagram on how to actually use Context IDs. I noted that the Connect-UDP method was no help as example yet.\r\n\r\n",
       "createdAt": "2021-07-13T15:08:52Z",
-      "updatedAt": "2021-07-15T16:26:50Z",
-      "closedAt": null,
+      "updatedAt": "2021-09-21T00:30:34Z",
+      "closedAt": "2021-09-21T00:30:34Z",
       "comments": [
         {
           "author": "DavidSchinazi",
@@ -1959,15 +1959,15 @@
       "id": "MDU6SXNzdWU5NTAwODU3NDA=",
       "title": "Walkthrough of intended use",
       "url": "https://github.com/ietf-wg-masque/draft-ietf-masque-h3-datagram/issues/79",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "MikeBishop",
       "authorAssociation": "CONTRIBUTOR",
       "assignees": [],
       "labels": [],
       "body": "The document currently has a lot of tools, but there are different ways of thinking about how you could use them and why they're in the protocol.  I feel like readability would improve dramatically if the document started with an overview that described one or two hypothetical flows.\r\n\r\nNot fully fleshed out protocols -- just an example of declaring a context associated to a request, request headers that inform the context, context extensions that inform it, exchanging datagrams, and closing the context.  The document makes reference to a few possible applications; maybe one of these could be drawn a little bit larger?",
       "createdAt": "2021-07-21T20:30:07Z",
-      "updatedAt": "2021-07-22T20:54:45Z",
-      "closedAt": null,
+      "updatedAt": "2021-09-21T00:30:34Z",
+      "closedAt": "2021-09-21T00:30:34Z",
       "comments": [
         {
           "author": "LPardue",
@@ -6395,26 +6395,168 @@
       "id": "MDExOlB1bGxSZXF1ZXN0NzMxNzE3OTA3",
       "title": "Rework how datagram format extensibility works",
       "url": "https://github.com/ietf-wg-masque/draft-ietf-masque-h3-datagram/pull/91",
-      "state": "OPEN",
+      "state": "MERGED",
       "author": "DavidSchinazi",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
       "labels": [],
       "body": "After spending some time on CONNECT-IP, I realized that the current design won't work well. The primary motivation for including contexts and formatting in this document (as opposed to in the individual drafts) is that it allows to build a layer that can handle extensions without round trip negotiations: in particular it means clients can start using an extension format immediately without waiting for the HTTP response. For that to work, the server needs to drop unknown formats, so we need a single format enum as opposed to a list of them - that way the entire context is ignored instead of accepting the context but ignoring the extension that might have changed the encoding.\r\n\r\n[Rendered view of this PR here](https://ietf-wg-masque.github.io/draft-ietf-masque-h3-datagram/rework_extensibility/draft-ietf-masque-h3-datagram.html).\r\n\r\nCloses #66.\r\nCloses #79.",
       "createdAt": "2021-09-10T19:53:24Z",
-      "updatedAt": "2021-09-18T12:49:57Z",
+      "updatedAt": "2021-09-21T00:30:41Z",
       "baseRepository": "ietf-wg-masque/draft-ietf-masque-h3-datagram",
       "baseRefName": "main",
       "baseRefOid": "5e9027f1a45cda7fb90709bacd17dcb19a3eebc8",
       "headRepository": "ietf-wg-masque/draft-ietf-masque-h3-datagram",
       "headRefName": "rework_extensibility",
-      "headRefOid": "69b68008fa6c7f884c9f1e10487d19ad66509888",
-      "closedAt": null,
-      "mergedAt": null,
-      "mergedBy": null,
-      "mergeCommit": null,
+      "headRefOid": "a478652c0993bb0764677768062891e5d0c8682b",
+      "closedAt": "2021-09-21T00:30:34Z",
+      "mergedAt": "2021-09-21T00:30:34Z",
+      "mergedBy": "DavidSchinazi",
+      "mergeCommit": {
+        "oid": "7c234e11a490cb824408da406bc696458752ac44"
+      },
       "comments": [],
-      "reviews": []
+      "reviews": [
+        {
+          "id": "PRR_kwDODOpKfc4tLxKU",
+          "commit": {
+            "abbreviatedOid": "69b6800"
+          },
+          "author": "LPardue",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2021-09-18T12:45:47Z",
+          "updatedAt": "2021-09-20T23:40:10Z",
+          "comments": [
+            {
+              "originalPosition": 12,
+              "body": "I read this sentence a few times and still how minor difficulty parsing it (in the context of the surrounding sentences). I don't have an immediate suggestion to improve readability though.\r\n\r\nLooking at the example below, it seems this PR is proposing that the nature of DATAGRAM payload **always** has to be communicated by the type. That didn't used to be the case. ",
+              "createdAt": "2021-09-20T23:29:15Z",
+              "updatedAt": "2021-09-20T23:40:10Z"
+            },
+            {
+              "originalPosition": 13,
+              "body": "Following from the above comment, since it sounds like datagrams always have a format, maybe it would be better to call this \"Datagram Format Additional Data\" to clearly mark it as separate to actual datagram data? ",
+              "createdAt": "2021-09-20T23:40:03Z",
+              "updatedAt": "2021-09-20T23:40:10Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDODOpKfc4tQFLa",
+          "commit": {
+            "abbreviatedOid": "69b6800"
+          },
+          "author": "DavidSchinazi",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2021-09-20T23:45:23Z",
+          "updatedAt": "2021-09-20T23:45:24Z",
+          "comments": [
+            {
+              "originalPosition": 12,
+              "body": "That's right, the idea would be to now always have an explicit type",
+              "createdAt": "2021-09-20T23:45:23Z",
+              "updatedAt": "2021-09-20T23:45:24Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDODOpKfc4tQFey",
+          "commit": {
+            "abbreviatedOid": "a478652"
+          },
+          "author": "DavidSchinazi",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2021-09-20T23:48:32Z",
+          "updatedAt": "2021-09-20T23:48:32Z",
+          "comments": [
+            {
+              "originalPosition": 13,
+              "body": "Good idea, done.",
+              "createdAt": "2021-09-20T23:48:32Z",
+              "updatedAt": "2021-09-20T23:48:32Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDODOpKfc4tQGqD",
+          "commit": {
+            "abbreviatedOid": "a478652"
+          },
+          "author": "LPardue",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2021-09-21T00:00:34Z",
+          "updatedAt": "2021-09-21T00:00:34Z",
+          "comments": [
+            {
+              "originalPosition": 153,
+              "body": "Another reason for rejecting a registration, for example, would be when receiving a Format Type of IP_PACKET on a CONNECT-UDP stream. Perhaps we can defined another code for that obviously broken case?",
+              "createdAt": "2021-09-21T00:00:34Z",
+              "updatedAt": "2021-09-21T00:00:34Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDODOpKfc4tQHsI",
+          "commit": {
+            "abbreviatedOid": "a478652"
+          },
+          "author": "DavidSchinazi",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2021-09-21T00:11:06Z",
+          "updatedAt": "2021-09-21T00:11:07Z",
+          "comments": [
+            {
+              "originalPosition": 153,
+              "body": "Agreed, though the reaction to the code would be the same (MUST NOT use this type again) so I don't think we need a separate code",
+              "createdAt": "2021-09-21T00:11:07Z",
+              "updatedAt": "2021-09-21T00:11:07Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDODOpKfc4tQIOm",
+          "commit": {
+            "abbreviatedOid": "a478652"
+          },
+          "author": "LPardue",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2021-09-21T00:17:07Z",
+          "updatedAt": "2021-09-21T00:17:07Z",
+          "comments": [
+            {
+              "originalPosition": 153,
+              "body": "yeah renaming DENIED to REJECTED and just stating policy or unsupported as examples where to use it could work. It's not a blocker to this PR though",
+              "createdAt": "2021-09-21T00:17:07Z",
+              "updatedAt": "2021-09-21T00:17:25Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDODOpKfc4tQITH",
+          "commit": {
+            "abbreviatedOid": "a478652"
+          },
+          "author": "LPardue",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2021-09-21T00:17:58Z",
+          "updatedAt": "2021-09-21T00:17:58Z",
+          "comments": []
+        }
+      ]
     }
   ]
 }
