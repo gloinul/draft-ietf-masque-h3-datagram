@@ -1613,15 +1613,15 @@ drop that Capsule.<a href="#section-4.3-6" class="pilcrow">¶</a></p>
           <h4 id="name-the-register_datagram_conte">
 <a href="#section-4.4.1" class="section-number selfRef">4.4.1. </a><a href="#name-the-register_datagram_conte" class="section-name selfRef">The REGISTER_DATAGRAM_CONTEXT Capsule</a>
           </h4>
-<p id="section-4.4.1-1">The REGISTER_DATAGRAM_CONTEXT capsule (type=0xff37a1) allows an endpoint to
-inform its peer of the encoding and semantics of datagrams associated with a
-given context ID. Its Capsule Data field consists of:<a href="#section-4.4.1-1" class="pilcrow">¶</a></p>
+<p id="section-4.4.1-1">The REGISTER_DATAGRAM_CONTEXT capsule (see <a href="#iana-types" class="xref">Section 8.2</a> for the value of the
+capsule type) allows an endpoint to inform its peer of the encoding and
+semantics of datagrams associated with a given context ID.<a href="#section-4.4.1-1" class="pilcrow">¶</a></p>
 <span id="name-register_datagram_context-c"></span><div id="register-capsule-format">
 <figure id="figure-4">
             <div class="alignLeft art-text artwork" id="section-4.4.1-2.1">
 <pre>
 REGISTER_DATAGRAM_CONTEXT Capsule {
-  Type (i) = 0xff37a1,
+  Type (i) = REGISTER_DATAGRAM_CONTEXT,
   Length (i),
   Context ID (i),
   Datagram Format Type (i),
@@ -1695,16 +1695,16 @@ corresponding stream with a stream error of type H3_GENERAL_PROTOCOL_ERROR.<a hr
           <h4 id="name-the-register_datagram_no_co">
 <a href="#section-4.4.2" class="section-number selfRef">4.4.2. </a><a href="#name-the-register_datagram_no_co" class="section-name selfRef">The REGISTER_DATAGRAM_NO_CONTEXT Capsule</a>
           </h4>
-<p id="section-4.4.2-1">The REGISTER_DATAGRAM_NO_CONTEXT capsule (type=0xff37a2) allows a client to
-inform the server that datagram contexts will not be used with this stream. It
-also informs the server of the encoding and semantics of datagrams associated
-with this stream. Its Capsule Data field consists of:<a href="#section-4.4.2-1" class="pilcrow">¶</a></p>
+<p id="section-4.4.2-1">The REGISTER_DATAGRAM_NO_CONTEXT capsule (see <a href="#iana-types" class="xref">Section 8.2</a> for the value of
+the capsule type) allows a client to inform the server that datagram contexts
+will not be used with this stream. It also informs the server of the encoding
+and semantics of datagrams associated with this stream.<a href="#section-4.4.2-1" class="pilcrow">¶</a></p>
 <span id="name-register_datagram_no_contex"></span><div id="register-no-context-capsule-format">
 <figure id="figure-5">
             <div class="alignLeft art-text artwork" id="section-4.4.2-2.1">
 <pre>
 REGISTER_DATAGRAM_NO_CONTEXT Capsule {
-  Type (i) = 0xff37a2,
+  Type (i) = REGISTER_DATAGRAM_NO_CONTEXT,
   Length (i),
   Datagram Format Type (i),
   Datagram Format Additional Data (..),
@@ -1764,15 +1764,15 @@ in use, and they MAY do so in a way which is opaque to intermediaries.<a href="#
           <h4 id="name-the-close_datagram_context-">
 <a href="#section-4.4.3" class="section-number selfRef">4.4.3. </a><a href="#name-the-close_datagram_context-" class="section-name selfRef">The CLOSE_DATAGRAM_CONTEXT Capsule</a>
           </h4>
-<p id="section-4.4.3-1">The CLOSE_DATAGRAM_CONTEXT capsule (type=0xff37a3) allows an endpoint to inform
-its peer that it will no longer send or parse received datagrams associated with
-a given context ID. Its Capsule Data field consists of:<a href="#section-4.4.3-1" class="pilcrow">¶</a></p>
+<p id="section-4.4.3-1">The CLOSE_DATAGRAM_CONTEXT capsule (see <a href="#iana-types" class="xref">Section 8.2</a> for the value of the
+capsule type) allows an endpoint to inform its peer that it will no longer send
+or parse received datagrams associated with a given context ID.<a href="#section-4.4.3-1" class="pilcrow">¶</a></p>
 <span id="name-close_datagram_context-caps"></span><div id="close-capsule-format">
 <figure id="figure-6">
             <div class="alignLeft art-text artwork" id="section-4.4.3-2.1">
 <pre>
 CLOSE_DATAGRAM_CONTEXT Capsule {
-  Type (i) = 0xff37a3,
+  Type (i) = CLOSE_DATAGRAM_CONTEXT,
   Length (i),
   Context ID (i),
   Close Code (i),
@@ -1875,15 +1875,16 @@ present. Close codes are registered with IANA, see <a href="#iana-close-codes" c
           <h4 id="name-the-datagram-capsule">
 <a href="#section-4.4.4" class="section-number selfRef">4.4.4. </a><a href="#name-the-datagram-capsule" class="section-name selfRef">The DATAGRAM Capsule</a>
           </h4>
-<p id="section-4.4.4-1">The DATAGRAM capsule (type=0xff37a0) allows an endpoint to send a datagram frame
-over an HTTP stream. This is particularly useful when using a version of HTTP
-that does not support QUIC DATAGRAM frames. Its Capsule Data field consists of:<a href="#section-4.4.4-1" class="pilcrow">¶</a></p>
+<p id="section-4.4.4-1">The DATAGRAM capsule (see <a href="#iana-types" class="xref">Section 8.2</a> for the value of the capsule type)
+allows an endpoint to send a datagram frame over an HTTP stream. This is
+particularly useful when using a version of HTTP that does not support QUIC
+DATAGRAM frames.<a href="#section-4.4.4-1" class="pilcrow">¶</a></p>
 <span id="name-datagram-capsule-format"></span><div id="datagram-capsule-format">
 <figure id="figure-7">
             <div class="alignLeft art-text artwork" id="section-4.4.4-2.1">
 <pre>
 DATAGRAM Capsule {
-  Type (i) = 0xff37a0,
+  Type (i) = DATAGRAM,
   Length (i),
   [Context ID (i)],
   HTTP Datagram Payload (..),

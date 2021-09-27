@@ -386,13 +386,13 @@ Table of Contents
 
 4.4.1.  The REGISTER_DATAGRAM_CONTEXT Capsule
 
-   The REGISTER_DATAGRAM_CONTEXT capsule (type=0xff37a1) allows an
-   endpoint to inform its peer of the encoding and semantics of
-   datagrams associated with a given context ID.  Its Capsule Data field
-   consists of:
+   The REGISTER_DATAGRAM_CONTEXT capsule (see Section 8.2 for the value
+   of the capsule type) allows an endpoint to inform its peer of the
+   encoding and semantics of datagrams associated with a given context
+   ID.
 
    REGISTER_DATAGRAM_CONTEXT Capsule {
-     Type (i) = 0xff37a1,
+     Type (i) = REGISTER_DATAGRAM_CONTEXT,
      Length (i),
      Context ID (i),
      Datagram Format Type (i),
@@ -454,14 +454,14 @@ Table of Contents
 
 4.4.2.  The REGISTER_DATAGRAM_NO_CONTEXT Capsule
 
-   The REGISTER_DATAGRAM_NO_CONTEXT capsule (type=0xff37a2) allows a
-   client to inform the server that datagram contexts will not be used
-   with this stream.  It also informs the server of the encoding and
-   semantics of datagrams associated with this stream.  Its Capsule Data
-   field consists of:
+   The REGISTER_DATAGRAM_NO_CONTEXT capsule (see Section 8.2 for the
+   value of the capsule type) allows a client to inform the server that
+   datagram contexts will not be used with this stream.  It also informs
+   the server of the encoding and semantics of datagrams associated with
+   this stream.
 
    REGISTER_DATAGRAM_NO_CONTEXT Capsule {
-     Type (i) = 0xff37a2,
+     Type (i) = REGISTER_DATAGRAM_NO_CONTEXT,
      Length (i),
      Datagram Format Type (i),
      Datagram Format Additional Data (..),
@@ -513,13 +513,13 @@ Table of Contents
 
 4.4.3.  The CLOSE_DATAGRAM_CONTEXT Capsule
 
-   The CLOSE_DATAGRAM_CONTEXT capsule (type=0xff37a3) allows an endpoint
-   to inform its peer that it will no longer send or parse received
-   datagrams associated with a given context ID.  Its Capsule Data field
-   consists of:
+   The CLOSE_DATAGRAM_CONTEXT capsule (see Section 8.2 for the value of
+   the capsule type) allows an endpoint to inform its peer that it will
+   no longer send or parse received datagrams associated with a given
+   context ID.
 
    CLOSE_DATAGRAM_CONTEXT Capsule {
-     Type (i) = 0xff37a3,
+     Type (i) = CLOSE_DATAGRAM_CONTEXT,
      Length (i),
      Context ID (i),
      Close Code (i),
@@ -589,13 +589,13 @@ Table of Contents
 
 4.4.4.  The DATAGRAM Capsule
 
-   The DATAGRAM capsule (type=0xff37a0) allows an endpoint to send a
-   datagram frame over an HTTP stream.  This is particularly useful when
-   using a version of HTTP that does not support QUIC DATAGRAM frames.
-   Its Capsule Data field consists of:
+   The DATAGRAM capsule (see Section 8.2 for the value of the capsule
+   type) allows an endpoint to send a datagram frame over an HTTP
+   stream.  This is particularly useful when using a version of HTTP
+   that does not support QUIC DATAGRAM frames.
 
    DATAGRAM Capsule {
-     Type (i) = 0xff37a0,
+     Type (i) = DATAGRAM,
      Length (i),
      [Context ID (i)],
      HTTP Datagram Payload (..),
