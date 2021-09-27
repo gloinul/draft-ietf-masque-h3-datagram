@@ -5,8 +5,8 @@
 MASQUE                                                       D. Schinazi
 Internet-Draft                                                Google LLC
 Intended status: Standards Track                               L. Pardue
-Expires: 25 March 2022                                        Cloudflare
-                                                       21 September 2021
+Expires: 31 March 2022                                        Cloudflare
+                                                       27 September 2021
 
 
                        Using Datagrams with HTTP
@@ -51,7 +51,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 25 March 2022.
+   This Internet-Draft will expire on 31 March 2022.
 
 Copyright Notice
 
@@ -389,9 +389,11 @@ Table of Contents
    The REGISTER_DATAGRAM_CONTEXT capsule (see Section 8.2 for the value
    of the capsule type) allows an endpoint to inform its peer of the
    encoding and semantics of datagrams associated with a given context
-   ID.  Its Capsule Data field consists of:
+   ID.
 
    REGISTER_DATAGRAM_CONTEXT Capsule {
+     Type (i) = REGISTER_DATAGRAM_CONTEXT,
+     Length (i),
      Context ID (i),
      Datagram Format Type (i),
      Datagram Format Additional Data (..),
@@ -456,9 +458,11 @@ Table of Contents
    value of the capsule type) allows a client to inform the server that
    datagram contexts will not be used with this stream.  It also informs
    the server of the encoding and semantics of datagrams associated with
-   this stream.  Its Capsule Data field consists of:
+   this stream.
 
    REGISTER_DATAGRAM_NO_CONTEXT Capsule {
+     Type (i) = REGISTER_DATAGRAM_NO_CONTEXT,
+     Length (i),
      Datagram Format Type (i),
      Datagram Format Additional Data (..),
    }
@@ -512,9 +516,11 @@ Table of Contents
    The CLOSE_DATAGRAM_CONTEXT capsule (see Section 8.2 for the value of
    the capsule type) allows an endpoint to inform its peer that it will
    no longer send or parse received datagrams associated with a given
-   context ID.  Its Capsule Data field consists of:
+   context ID.
 
    CLOSE_DATAGRAM_CONTEXT Capsule {
+     Type (i) = CLOSE_DATAGRAM_CONTEXT,
+     Length (i),
      Context ID (i),
      Close Code (i),
      Close Details (..),
@@ -586,10 +592,11 @@ Table of Contents
    The DATAGRAM capsule (see Section 8.2 for the value of the capsule
    type) allows an endpoint to send a datagram frame over an HTTP
    stream.  This is particularly useful when using a version of HTTP
-   that does not support QUIC DATAGRAM frames.  Its Capsule Data field
-   consists of:
+   that does not support QUIC DATAGRAM frames.
 
    DATAGRAM Capsule {
+     Type (i) = DATAGRAM,
+     Length (i),
      [Context ID (i)],
      HTTP Datagram Payload (..),
    }
