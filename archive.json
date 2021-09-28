@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2021-09-21T01:05:40.030148+00:00",
+  "timestamp": "2021-09-28T01:05:14.057582+00:00",
   "repo": "ietf-wg-masque/draft-ietf-masque-h3-datagram",
   "labels": [
     {
@@ -1997,7 +1997,7 @@
       "labels": [],
       "body": "The DATAGRAM capsule has an optional Context ID field. The presence of this field is based on state held in stream objects, not signalled on the wire itself. \r\n\r\nIME it's rare that the parsing of an HTTP/3 frame (in this case, the CAPSULE frame that holds the capsule) is dependent on state in this way.\r\n\r\nSo the suggestion is to define DATAGRAM/DATAGRAM_NO_CONTEXT capsule types which would allow stateless parsing of frames. After a whole frame is read, receivers can then validate ordering rules such REGISTER_CONTEXT followed by DATAGRAM capsule, REGISTER_NO_CONTEXT followed by DATAGRAM_NO_CONTEXT.\r\n\r\nThis would also allow an early shortcut exit where the CAPSULE frame length can be used to validate that the DATAGRAM capsule is suitable large.",
       "createdAt": "2021-07-23T18:35:37Z",
-      "updatedAt": "2021-07-24T18:21:37Z",
+      "updatedAt": "2021-09-26T14:24:43Z",
       "closedAt": null,
       "comments": [
         {
@@ -2041,6 +2041,13 @@
           "body": "Intermediaries do need to parse the datagram capsule type, but they don't need to parse the context ID nor payload, they just need to forward the \"optional context ID followed by payload\" opaque blob.\r\n\r\nMy implementation doesn't currently support acting as intermediary, so I have full parsing together for now. I plan on supporting this in Envoy as both intermediary and endpoint so I'll have to ponder how best to do that. I suspect I'll just split parsing in two: first half parses capsule type and opaque capsule data, second half parses capsule data according to the type.\r\n\r\nBut regardless, I totally agree that this is worth thinking about some more.",
           "createdAt": "2021-07-24T18:21:37Z",
           "updatedAt": "2021-07-24T18:21:37Z"
+        },
+        {
+          "author": "LPardue",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Daivd said:\r\n> Since this stateful logic is required to parse QUIC DATAGRAM frames, I'd prefer the format of DATAGRAM capsules to closely match that of QUIC DATAGRAM frames.\r\n\r\nI'd overlooked this point earlier. There's not a cheap way to incorporate a CONTEXT/NO_CONTEXT discriminator into the HTTP/3 DATAGRAM frame. Spending a varint on that seems like a waste.",
+          "createdAt": "2021-09-26T14:24:43Z",
+          "updatedAt": "2021-09-26T14:24:43Z"
         }
       ]
     },
@@ -2082,7 +2089,7 @@
       "labels": [],
       "body": "The capsules that signal use of different datagram contexts (or the absence thereof) assume that there is a generic need for this form of identification.  That has not been established.  WebTransport certainly doesn't need it.  \r\n\r\nAs this is an *end-to-end* signal anyway, it is also a *protocol-specific* signal.  All uses of this framework are perfectly capable of doing their own signaling and negotiation.  A one-size-fits-all mechanism is more likely a one-size-fits-few mechanism, but it still comes with costs that every user has to bear (see ietf-wg-webtrans/draft-ietf-webtrans-http3#54 for instance).\r\n\r\nFor instance, if CONNECT-UDP wanted to signal ECN and DSCP, that might be more efficiently achieved with a single byte (2 + 6) rather than a varint.  If CONNECT-IP wanted different compression contexts, that might be suited to a varint, but why would this draft be in a position to decide that?\r\n\r\nAs there is no value in an intermediary looking at these context identifiers - I would argue negative utility in the RFC 8558 sense - these should be removed from the protocol.\r\n\r\nThe only potential value I see in having some sort of signaling here is to explicitly signal the use of DATAGRAM frames associated with a stream.  However, as we have agreed to send DATAGRAM frames without negotiation, that too seems like it won't be needed.",
       "createdAt": "2021-08-03T00:49:31Z",
-      "updatedAt": "2021-08-12T18:24:34Z",
+      "updatedAt": "2021-09-26T14:50:01Z",
       "closedAt": null,
       "comments": [
         {
@@ -2140,6 +2147,13 @@
           "body": "But if the intermediaries treat all of the capsules the same, it doesn't matter if datagram contexts are optional or not, since it would require parsing capsules to know that.",
           "createdAt": "2021-08-12T18:24:34Z",
           "updatedAt": "2021-08-12T18:24:34Z"
+        },
+        {
+          "author": "LPardue",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Related to this, we have\r\n\r\n> Implementations of HTTP Datagrams MUST provide a context ID allocation service. That service will allow applications co-located with HTTP to request a unique context ID that they can subsequently use for their own purposes.\r\n\r\nThis seems to be a bit of a backdoor requirement. An implementation that only cared to support no-context datagrams would not need the context ID allocation service.",
+          "createdAt": "2021-09-26T14:50:01Z",
+          "updatedAt": "2021-09-26T14:50:01Z"
         }
       ]
     },
@@ -2158,6 +2172,158 @@
       "updatedAt": "2021-09-09T23:32:42Z",
       "closedAt": "2021-09-09T23:32:42Z",
       "comments": []
+    },
+    {
+      "number": 92,
+      "id": "I_kwDODOpKfc48C9oB",
+      "title": "Describe document structure and/or terms in intro section",
+      "url": "https://github.com/ietf-wg-masque/draft-ietf-masque-h3-datagram/issues/92",
+      "state": "OPEN",
+      "author": "LPardue",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [
+        "editorial"
+      ],
+      "body": "There's now several different concepts to wrangle in this document. Reading from the top, we first tackle multiplexing (the major motivation for the document), then the frame, then capsules. Capsules underpin the mechanics of multiplexing. I don't think we can fix this chicken and egg problem but adding a brief overview of the concepts and terms before they are tackled in the prose could help readability.",
+      "createdAt": "2021-09-26T14:37:43Z",
+      "updatedAt": "2021-09-27T16:15:48Z",
+      "closedAt": null,
+      "comments": [
+        {
+          "author": "DavidSchinazi",
+          "authorAssociation": "COLLABORATOR",
+          "body": "I think that sounds like a great idea!",
+          "createdAt": "2021-09-27T16:15:48Z",
+          "updatedAt": "2021-09-27T16:15:48Z"
+        }
+      ]
+    },
+    {
+      "number": 93,
+      "id": "I_kwDODOpKfc48C_I6",
+      "title": "Quarter Stream ID range is smaller than Stream ID range",
+      "url": "https://github.com/ietf-wg-masque/draft-ietf-masque-h3-datagram/issues/93",
+      "state": "OPEN",
+      "author": "LPardue",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "Stating the obvious here. But we're using value with a legal range larger than semantically legal. RFC 9000 has some similar caveats with MAX_STREAMS https://www.rfc-editor.org/rfc/rfc9000.html#section-19.11\r\n\r\nTo address this, the suggestion is to add something like\r\n\r\n>  The largest legal stream ID is 2^62 - 1, so this value cannot exceed (2^62-1) / 4. Receipt of a frame that includes a larger value MUST be treated as a connection error of type FRAME_ENCODING_ERROR",
+      "createdAt": "2021-09-26T15:02:46Z",
+      "updatedAt": "2021-09-27T16:16:57Z",
+      "closedAt": null,
+      "comments": [
+        {
+          "author": "DavidSchinazi",
+          "authorAssociation": "COLLABORATOR",
+          "body": "That suggestion sounds good to me.",
+          "createdAt": "2021-09-27T16:16:50Z",
+          "updatedAt": "2021-09-27T16:16:57Z"
+        }
+      ]
+    },
+    {
+      "number": 94,
+      "id": "I_kwDODOpKfc48DAEt",
+      "title": "Expand all capsule figures to include their Type and Length fields",
+      "url": "https://github.com/ietf-wg-masque/draft-ietf-masque-h3-datagram/issues/94",
+      "state": "CLOSED",
+      "author": "LPardue",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [
+        "editorial"
+      ],
+      "body": "QUIC and HTTP/3 style is to define the general format and then in each instance define the object including all of its fields. This would look like\r\n\r\n```\r\nREGISTER_DATAGRAM_CONTEXT Capsule {\r\n  Type (i) = see Section 8.2,\r\n  Length (i)\r\n  Context ID (i),\r\n  Datagram Format Type (i),\r\n  Datagram Format Additional Data (..),\r\n}\r\n```\r\n\r\nThis can later be updated with the actual type value once things settle down",
+      "createdAt": "2021-09-26T15:15:38Z",
+      "updatedAt": "2021-09-27T23:24:11Z",
+      "closedAt": "2021-09-27T23:24:11Z",
+      "comments": [
+        {
+          "author": "DavidSchinazi",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Fine by me.",
+          "createdAt": "2021-09-27T16:17:26Z",
+          "updatedAt": "2021-09-27T16:17:26Z"
+        }
+      ]
+    },
+    {
+      "number": 95,
+      "id": "I_kwDODOpKfc48DA9R",
+      "title": "Consider a GENERAL_ERROR close code",
+      "url": "https://github.com/ietf-wg-masque/draft-ietf-masque-h3-datagram/issues/95",
+      "state": "OPEN",
+      "author": "LPardue",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "There may be cases (imagine new capsule types) where somthing went wrong but none of the existing codes are appropriate. Signalling NO_ERROR is not appropriate and may be misleading.",
+      "createdAt": "2021-09-26T15:29:59Z",
+      "updatedAt": "2021-09-27T19:16:27Z",
+      "closedAt": null,
+      "comments": [
+        {
+          "author": "DavidSchinazi",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Close context capsules carry two items of information about the reason for closing: close codes and close details. In my mind, the close code is meant for software (if you receive this close code instead of that one, the implementation will behave differently) whereas the close details are for humans trying to debug things. So when we're thinking of adding a new close code (as opposed to sending more prose in close details), it begs the question: how would software treat GENERAL_ERROR differently from NO_ERROR?",
+          "createdAt": "2021-09-27T16:21:27Z",
+          "updatedAt": "2021-09-27T16:21:27Z"
+        },
+        {
+          "author": "LPardue",
+          "authorAssociation": "COLLABORATOR",
+          "body": "good question!\r\n\r\nWe should probably try to capture the ethos of these error codes so everyone has the same expectation. For instance HTTP/3 says\r\n\r\n> Stream errors are distinct\r\n   from HTTP status codes which indicate error conditions.  Stream\r\n   errors indicate that the sender did not transfer or consume the full\r\n   request or response, while HTTP status codes indicate the result of a\r\n   request that was successfully received.\r\n\r\nIs a close code more like a HTTP status code or a stream error code? It feels like the latter, so to use your examples, when thinking about retry registration, it sounds like we have categories where it is safe to retry registration (NO_ERROR), most definitely not allowed to retry (UNKNOWN_FORMAT, DENIED), maybe retry (RESOURCE_LIMIT). So I guess a GENERAL_ERROR type would fit into a maybe retry bucket. And if some new use of capsules requires \"don't retry\" where the existing codes aren't suited, they really should define a new code.\r\n\r\nAlternatively, we seem to just be reinventing HTTP status codes - so we could, y'know, just use that value range here :laughing: ",
+          "createdAt": "2021-09-27T16:45:13Z",
+          "updatedAt": "2021-09-27T16:45:13Z"
+        },
+        {
+          "author": "DavidSchinazi",
+          "authorAssociation": "COLLABORATOR",
+          "body": "I agree writing some text about the ethos and intended use of closes codes is a good idea. Perhaps something like:\r\n* Close codes are intended to allow implementations to react differently when they receive them - for example, some close codes require the receiver to not open another context under certain conditions. Extensions to this mechanism MAY define new close codes if they wish to have receivers react differently.\r\n\r\nI don't think NO_ERROR is in the \"safe to retry\" category, because unknown codes are meant to be treated as NO_ERROR. Perhaps we merge NO_ERROR and GENERAL_ERROR and rename the result UNKNOWN_ERROR?",
+          "createdAt": "2021-09-27T17:46:21Z",
+          "updatedAt": "2021-09-27T17:46:21Z"
+        },
+        {
+          "author": "LPardue",
+          "authorAssociation": "COLLABORATOR",
+          "body": "How about we spin off \"ethos and intention\" to a new ticket?\r\n\r\n> I don't think NO_ERROR is in the \"safe to retry\" category, because unknown codes are meant to be treated as NO_ERROR. \r\n\r\nAh good point. \r\n\r\nI'm all for bikeshedding a name - how about MAYBE_ERROR?\r\n\r\nI realise that the current definition\r\n\r\n> NO_ERROR: This indicates that the registration was closed without any additional information.\r\n\r\nis slightly ambiguous as to whether the `Close Details\" field would be populated or not.\r\n",
+          "createdAt": "2021-09-27T19:06:33Z",
+          "updatedAt": "2021-09-27T19:06:33Z"
+        },
+        {
+          "author": "DavidSchinazi",
+          "authorAssociation": "COLLABORATOR",
+          "body": "> How about we spin off \"ethos and intention\" to a new ticket?\r\n\r\nSure!\r\n\r\n> I'm all for bikeshedding a name - how about MAYBE_ERROR?\r\n\r\nI prefer UNKNOWN_ERROR to MAYBE_ERROR, but I don't care too much.\r\n\r\n> I realise that the current definition\r\n> \r\n> > NO_ERROR: This indicates that the registration was closed without any additional information.\r\n> \r\n> is slightly ambiguous as to whether the `Close Details\" field would be populated or not.\r\n\r\nAgreed. Perhaps something like:\r\n* NO_ERROR: This indicates that the registration was closed without any action specified for the receiver.\r\n\r\nI'm not loving that sentence, but my intent was to convey that close codes exist to carry some action or requirement of the receiver, and NO_ERROR carries no such action or requirement.",
+          "createdAt": "2021-09-27T19:16:27Z",
+          "updatedAt": "2021-09-27T19:16:27Z"
+        }
+      ]
+    },
+    {
+      "number": 96,
+      "id": "I_kwDODOpKfc48DBKY",
+      "title": "Capsules on data streams means we need some consideration about prioritization",
+      "url": "https://github.com/ietf-wg-masque/draft-ietf-masque-h3-datagram/issues/96",
+      "state": "OPEN",
+      "author": "LPardue",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "Most likely just need a sentence saying that the data stream is treated the same regardless if capsules are used or not.",
+      "createdAt": "2021-09-26T15:33:12Z",
+      "updatedAt": "2021-09-27T16:21:53Z",
+      "closedAt": null,
+      "comments": [
+        {
+          "author": "DavidSchinazi",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Adding that sentence sounds fine by me.",
+          "createdAt": "2021-09-27T16:21:52Z",
+          "updatedAt": "2021-09-27T16:21:52Z"
+        }
+      ]
     }
   ],
   "pulls": [
@@ -6554,6 +6720,116 @@
           "body": "",
           "createdAt": "2021-09-21T00:17:58Z",
           "updatedAt": "2021-09-21T00:17:58Z",
+          "comments": []
+        }
+      ]
+    },
+    {
+      "number": 97,
+      "id": "PR_kwDODOpKfc4sV-5d",
+      "title": "expand capsule diagrams to include all fields",
+      "url": "https://github.com/ietf-wg-masque/draft-ietf-masque-h3-datagram/pull/97",
+      "state": "MERGED",
+      "author": "LPardue",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "The thing that sucks here is that the diagram won't auto expand `{{iana-types}}`, so we can't easily ref the section. Manually referring to the section is a maintenance pain. So instead just state the actual type in the text an the diagram. I have a feeling you were linking to the section to avoid the maintenance hassle of updating type codes in multiple place. But I'm quite happy to take that burden because I find it more pleasant to read this way.\r\n\r\n\r\nfixes #94 \r\n\r\n",
+      "createdAt": "2021-09-27T22:47:20Z",
+      "updatedAt": "2021-09-27T23:24:15Z",
+      "baseRepository": "ietf-wg-masque/draft-ietf-masque-h3-datagram",
+      "baseRefName": "main",
+      "baseRefOid": "7c234e11a490cb824408da406bc696458752ac44",
+      "headRepository": "ietf-wg-masque/draft-ietf-masque-h3-datagram",
+      "headRefName": "full-frame-figures",
+      "headRefOid": "f171a576954836c33cb3f491faa6ff31c784f416",
+      "closedAt": "2021-09-27T23:24:11Z",
+      "mergedAt": "2021-09-27T23:24:11Z",
+      "mergedBy": "DavidSchinazi",
+      "mergeCommit": {
+        "oid": "c3f5b8bd96cb44da63bb66e7b2d95b7d6fb76220"
+      },
+      "comments": [
+        {
+          "author": "LPardue",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Perfectly reasonable",
+          "createdAt": "2021-09-27T23:04:39Z",
+          "updatedAt": "2021-09-27T23:04:39Z"
+        }
+      ],
+      "reviews": [
+        {
+          "id": "PRR_kwDODOpKfc4tlj7N",
+          "commit": {
+            "abbreviatedOid": "fa9bb44"
+          },
+          "author": "DavidSchinazi",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "It's not just a maintenance hassle, I've been guilty of forgetting to update parts of redundant information like this in the past and I don't trust myself to not forget in the future - then you end up with a spec that disagrees with itself. How about instead:\r\n\r\n\r\n```\r\nThe REGISTER_DATAGRAM_CONTEXT capsule (see {{iana-types}} for the value of the\r\ncapsule type) allows an endpoint to inform its peer of the encoding and\r\nsemantics of datagrams associated with a given context ID. Its Capsule Data\r\nfield consists of:\r\n\r\n~~~\r\nREGISTER_DATAGRAM_CONTEXT Capsule {\r\n  Type (i) = REGISTER_DATAGRAM_CONTEXT,\r\n  Length (i),\r\n  Context ID (i),\r\n  Datagram Format Type (i),\r\n  Datagram Format Additional Data (..),\r\n}\r\n~~~\r\n```\r\n\r\nAlso, to state the obvious: when we get to WGLC and don't expect to modify these numbers again, I fully support writing the final values into both the texts and diagrams to improve readability.",
+          "createdAt": "2021-09-27T22:56:52Z",
+          "updatedAt": "2021-09-27T22:57:20Z",
+          "comments": [
+            {
+              "originalPosition": 10,
+              "body": "`Its Capsule Data field consists of` is no longer correct, we should rephrase it",
+              "createdAt": "2021-09-27T22:56:52Z",
+              "updatedAt": "2021-09-27T22:57:20Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDODOpKfc4tlmFB",
+          "commit": {
+            "abbreviatedOid": "fa9bb44"
+          },
+          "author": "LPardue",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2021-09-27T23:14:57Z",
+          "updatedAt": "2021-09-27T23:14:57Z",
+          "comments": [
+            {
+              "originalPosition": 10,
+              "body": "I vote for just remove it\r\n",
+              "createdAt": "2021-09-27T23:14:57Z",
+              "updatedAt": "2021-09-27T23:14:57Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDODOpKfc4tlmc-",
+          "commit": {
+            "abbreviatedOid": "fa9bb44"
+          },
+          "author": "DavidSchinazi",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2021-09-27T23:18:19Z",
+          "updatedAt": "2021-09-27T23:18:19Z",
+          "comments": [
+            {
+              "originalPosition": 10,
+              "body": "Fine by me",
+              "createdAt": "2021-09-27T23:18:19Z",
+              "updatedAt": "2021-09-27T23:18:19Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDODOpKfc4tlnG6",
+          "commit": {
+            "abbreviatedOid": "f171a57"
+          },
+          "author": "DavidSchinazi",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2021-09-27T23:24:00Z",
+          "updatedAt": "2021-09-27T23:24:00Z",
           "comments": []
         }
       ]
