@@ -771,9 +771,7 @@ Table of Contents
    The "HTTP Capsule Types" registry governs a 62-bit space.
    Registrations in this registry MUST include the following fields:
 
-   Type:
-
-   A name or label for the capsule type.
+   Type:  A name or label for the capsule type.
 
    Value:  The value of the Capsule Type field (see Section 4.1) is a
       62bit integer.
@@ -814,9 +812,7 @@ Table of Contents
    space.  Registrations in this registry MUST include the following
    fields:
 
-   Type:
-
-   A name or label for the datagram format type.
+   Type:  A name or label for the datagram format type.
 
    Value:  The value of the Datagram Format Type field (see Section 2.2)
       is a 62bit integer.
@@ -843,9 +839,7 @@ Table of Contents
    The "HTTP Context Close Codes" registry governs a 62-bit space.
    Registrations in this registry MUST include the following fields:
 
-   Type:
-
-   A name or label for the close code.
+   Type:  A name or label for the close code.
 
    Value:  The value of the Close Code field (see Section 4.4.3) is a
       62bit integer.
@@ -886,9 +880,9 @@ Table of Contents
 
    [DGRAM]    Pauly, T., Kinnear, E., and D. Schinazi, "An Unreliable
               Datagram Extension to QUIC", Work in Progress, Internet-
-              Draft, draft-ietf-quic-datagram-05, 1 October 2021,
+              Draft, draft-ietf-quic-datagram-06, 5 October 2021,
               <https://datatracker.ietf.org/doc/html/draft-ietf-quic-
-              datagram-05>.
+              datagram-06>.
 
    [H3]       Bishop, M., "Hypertext Transfer Protocol Version 3
               (HTTP/3)", Work in Progress, Internet-Draft, draft-ietf-

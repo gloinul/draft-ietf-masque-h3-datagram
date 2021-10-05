@@ -2110,27 +2110,31 @@ HTTP/3 datagrams enabled on this endpoint.<a href="#section-7-1" class="pilcrow"
 <p id="section-8.2-1">This document establishes a registry for HTTP capsule type codes. The "HTTP
 Capsule Types" registry governs a 62-bit space. Registrations in this registry
 MUST include the following fields:<a href="#section-8.2-1" class="pilcrow">¶</a></p>
-<p id="section-8.2-2">Type:<a href="#section-8.2-2" class="pilcrow">¶</a></p>
-<p id="section-8.2-3">A name or label for the capsule type.<a href="#section-8.2-3" class="pilcrow">¶</a></p>
-<span class="break"></span><dl class="dlParallel" id="section-8.2-4">
-          <dt id="section-8.2-4.1">
-Value:  </dt>
-          <dd style="margin-left: 1.5em" id="section-8.2-4.2">
-            <p id="section-8.2-4.2.1">The value of the Capsule Type field (see <a href="#capsule-protocol" class="xref">Section 4.1</a>) is a 62bit
-integer.<a href="#section-8.2-4.2.1" class="pilcrow">¶</a></p>
+<span class="break"></span><dl class="dlParallel" id="section-8.2-2">
+          <dt id="section-8.2-2.1">
+Type:  </dt>
+          <dd style="margin-left: 1.5em" id="section-8.2-2.2">
+            <p id="section-8.2-2.2.1">A name or label for the capsule type.<a href="#section-8.2-2.2.1" class="pilcrow">¶</a></p>
 </dd>
           <dd class="break"></dd>
-<dt id="section-8.2-4.3">
+<dt id="section-8.2-2.3">
+Value:  </dt>
+          <dd style="margin-left: 1.5em" id="section-8.2-2.4">
+            <p id="section-8.2-2.4.1">The value of the Capsule Type field (see <a href="#capsule-protocol" class="xref">Section 4.1</a>) is a 62bit
+integer.<a href="#section-8.2-2.4.1" class="pilcrow">¶</a></p>
+</dd>
+          <dd class="break"></dd>
+<dt id="section-8.2-2.5">
 Reference:  </dt>
-          <dd style="margin-left: 1.5em" id="section-8.2-4.4">
-            <p id="section-8.2-4.4.1">An optional reference to a specification for the type. This field MAY be
-empty.<a href="#section-8.2-4.4.1" class="pilcrow">¶</a></p>
+          <dd style="margin-left: 1.5em" id="section-8.2-2.6">
+            <p id="section-8.2-2.6.1">An optional reference to a specification for the type. This field MAY be
+empty.<a href="#section-8.2-2.6.1" class="pilcrow">¶</a></p>
 </dd>
         <dd class="break"></dd>
 </dl>
-<p id="section-8.2-5">Registrations follow the "First Come First Served" policy (see Section 4.4 of
-<span>[<a href="#IANA-POLICY" class="xref">IANA-POLICY</a>]</span>) where two registrations MUST NOT have the same Type.<a href="#section-8.2-5" class="pilcrow">¶</a></p>
-<p id="section-8.2-6">This registry initially contains the following entries:<a href="#section-8.2-6" class="pilcrow">¶</a></p>
+<p id="section-8.2-3">Registrations follow the "First Come First Served" policy (see Section 4.4 of
+<span>[<a href="#IANA-POLICY" class="xref">IANA-POLICY</a>]</span>) where two registrations MUST NOT have the same Type.<a href="#section-8.2-3" class="pilcrow">¶</a></p>
+<p id="section-8.2-4">This registry initially contains the following entries:<a href="#section-8.2-4" class="pilcrow">¶</a></p>
 <span id="name-initial-capsule-types-regis"></span><div id="iana-types-table">
 <table class="center" id="table-2">
           <caption>
@@ -2168,11 +2172,11 @@ empty.<a href="#section-8.2-4.4.1" class="pilcrow">¶</a></p>
           </tbody>
         </table>
 </div>
-<p id="section-8.2-8">Capsule types with a value of the form 41 * N + 23 for integer values of N are
+<p id="section-8.2-6">Capsule types with a value of the form 41 * N + 23 for integer values of N are
 reserved to exercise the requirement that unknown capsule types be ignored.
 These capsules have no semantics and can carry arbitrary values. These values
 MUST NOT be assigned by IANA and MUST NOT appear in the listing of assigned
-values.<a href="#section-8.2-8" class="pilcrow">¶</a></p>
+values.<a href="#section-8.2-6" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="iana-format-types">
@@ -2183,33 +2187,37 @@ values.<a href="#section-8.2-8" class="pilcrow">¶</a></p>
 <p id="section-8.3-1">This document establishes a registry for HTTP datagram format type codes. The
 "HTTP Datagram Format Types" registry governs a 62-bit space. Registrations in
 this registry MUST include the following fields:<a href="#section-8.3-1" class="pilcrow">¶</a></p>
-<p id="section-8.3-2">Type:<a href="#section-8.3-2" class="pilcrow">¶</a></p>
-<p id="section-8.3-3">A name or label for the datagram format type.<a href="#section-8.3-3" class="pilcrow">¶</a></p>
-<span class="break"></span><dl class="dlParallel" id="section-8.3-4">
-          <dt id="section-8.3-4.1">
-Value:  </dt>
-          <dd style="margin-left: 1.5em" id="section-8.3-4.2">
-            <p id="section-8.3-4.2.1">The value of the Datagram Format Type field (see <a href="#datagram-formats" class="xref">Section 2.2</a>) is a
-62bit integer.<a href="#section-8.3-4.2.1" class="pilcrow">¶</a></p>
+<span class="break"></span><dl class="dlParallel" id="section-8.3-2">
+          <dt id="section-8.3-2.1">
+Type:  </dt>
+          <dd style="margin-left: 1.5em" id="section-8.3-2.2">
+            <p id="section-8.3-2.2.1">A name or label for the datagram format type.<a href="#section-8.3-2.2.1" class="pilcrow">¶</a></p>
 </dd>
           <dd class="break"></dd>
-<dt id="section-8.3-4.3">
+<dt id="section-8.3-2.3">
+Value:  </dt>
+          <dd style="margin-left: 1.5em" id="section-8.3-2.4">
+            <p id="section-8.3-2.4.1">The value of the Datagram Format Type field (see <a href="#datagram-formats" class="xref">Section 2.2</a>) is a
+62bit integer.<a href="#section-8.3-2.4.1" class="pilcrow">¶</a></p>
+</dd>
+          <dd class="break"></dd>
+<dt id="section-8.3-2.5">
 Reference:  </dt>
-          <dd style="margin-left: 1.5em" id="section-8.3-4.4">
-            <p id="section-8.3-4.4.1">An optional reference to a specification for the parameter. This field MAY be
-empty.<a href="#section-8.3-4.4.1" class="pilcrow">¶</a></p>
+          <dd style="margin-left: 1.5em" id="section-8.3-2.6">
+            <p id="section-8.3-2.6.1">An optional reference to a specification for the parameter. This field MAY be
+empty.<a href="#section-8.3-2.6.1" class="pilcrow">¶</a></p>
 </dd>
         <dd class="break"></dd>
 </dl>
-<p id="section-8.3-5">Registrations follow the "First Come First Served" policy (see Section 4.4 of
+<p id="section-8.3-3">Registrations follow the "First Come First Served" policy (see Section 4.4 of
 <span>[<a href="#IANA-POLICY" class="xref">IANA-POLICY</a>]</span>) where two registrations MUST NOT have the same Type
-nor Value.<a href="#section-8.3-5" class="pilcrow">¶</a></p>
-<p id="section-8.3-6">This registry is initially empty.<a href="#section-8.3-6" class="pilcrow">¶</a></p>
-<p id="section-8.3-7">Datagram format types with a value of the form 41 * N + 17 for integer values
+nor Value.<a href="#section-8.3-3" class="pilcrow">¶</a></p>
+<p id="section-8.3-4">This registry is initially empty.<a href="#section-8.3-4" class="pilcrow">¶</a></p>
+<p id="section-8.3-5">Datagram format types with a value of the form 41 * N + 17 for integer values
 of N are reserved to exercise the requirement that unknown datagram format
 types be ignored. These format types have no semantics and can carry arbitrary
 values. These values MUST NOT be assigned by IANA and MUST NOT appear in the
-listing of assigned values.<a href="#section-8.3-7" class="pilcrow">¶</a></p>
+listing of assigned values.<a href="#section-8.3-5" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="iana-close-codes">
@@ -2220,27 +2228,31 @@ listing of assigned values.<a href="#section-8.3-7" class="pilcrow">¶</a></p>
 <p id="section-8.4-1">This document establishes a registry for HTTP context close codes. The "HTTP
 Context Close Codes" registry governs a 62-bit space. Registrations in this
 registry MUST include the following fields:<a href="#section-8.4-1" class="pilcrow">¶</a></p>
-<p id="section-8.4-2">Type:<a href="#section-8.4-2" class="pilcrow">¶</a></p>
-<p id="section-8.4-3">A name or label for the close code.<a href="#section-8.4-3" class="pilcrow">¶</a></p>
-<span class="break"></span><dl class="dlParallel" id="section-8.4-4">
-          <dt id="section-8.4-4.1">
-Value:  </dt>
-          <dd style="margin-left: 1.5em" id="section-8.4-4.2">
-            <p id="section-8.4-4.2.1">The value of the Close Code field (see <a href="#close-capsule" class="xref">Section 4.4.3</a>) is a 62bit integer.<a href="#section-8.4-4.2.1" class="pilcrow">¶</a></p>
+<span class="break"></span><dl class="dlParallel" id="section-8.4-2">
+          <dt id="section-8.4-2.1">
+Type:  </dt>
+          <dd style="margin-left: 1.5em" id="section-8.4-2.2">
+            <p id="section-8.4-2.2.1">A name or label for the close code.<a href="#section-8.4-2.2.1" class="pilcrow">¶</a></p>
 </dd>
           <dd class="break"></dd>
-<dt id="section-8.4-4.3">
+<dt id="section-8.4-2.3">
+Value:  </dt>
+          <dd style="margin-left: 1.5em" id="section-8.4-2.4">
+            <p id="section-8.4-2.4.1">The value of the Close Code field (see <a href="#close-capsule" class="xref">Section 4.4.3</a>) is a 62bit integer.<a href="#section-8.4-2.4.1" class="pilcrow">¶</a></p>
+</dd>
+          <dd class="break"></dd>
+<dt id="section-8.4-2.5">
 Reference:  </dt>
-          <dd style="margin-left: 1.5em" id="section-8.4-4.4">
-            <p id="section-8.4-4.4.1">An optional reference to a specification for the parameter. This field MAY be
-empty.<a href="#section-8.4-4.4.1" class="pilcrow">¶</a></p>
+          <dd style="margin-left: 1.5em" id="section-8.4-2.6">
+            <p id="section-8.4-2.6.1">An optional reference to a specification for the parameter. This field MAY be
+empty.<a href="#section-8.4-2.6.1" class="pilcrow">¶</a></p>
 </dd>
         <dd class="break"></dd>
 </dl>
-<p id="section-8.4-5">Registrations follow the "First Come First Served" policy (see Section 4.4 of
+<p id="section-8.4-3">Registrations follow the "First Come First Served" policy (see Section 4.4 of
 <span>[<a href="#IANA-POLICY" class="xref">IANA-POLICY</a>]</span>) where two registrations MUST NOT have the same Type
-nor Value.<a href="#section-8.4-5" class="pilcrow">¶</a></p>
-<p id="section-8.4-6">This registry initially contains the following entries:<a href="#section-8.4-6" class="pilcrow">¶</a></p>
+nor Value.<a href="#section-8.4-3" class="pilcrow">¶</a></p>
+<p id="section-8.4-4">This registry initially contains the following entries:<a href="#section-8.4-4" class="pilcrow">¶</a></p>
 <span id="name-initial-context-close-code-"></span><div id="iana-close-codes-table">
 <table class="center" id="table-3">
           <caption>
@@ -2278,10 +2290,10 @@ nor Value.<a href="#section-8.4-5" class="pilcrow">¶</a></p>
           </tbody>
         </table>
 </div>
-<p id="section-8.4-8">Context close codes with a value of the form 41 * N + 19 for integer values of
+<p id="section-8.4-6">Context close codes with a value of the form 41 * N + 19 for integer values of
 N are reserved to exercise the requirement that unknown context close codes be
 treated as NO_ERROR. These values MUST NOT be assigned by IANA and MUST NOT
-appear in the listing of assigned values.<a href="#section-8.4-8" class="pilcrow">¶</a></p>
+appear in the listing of assigned values.<a href="#section-8.4-6" class="pilcrow">¶</a></p>
 </section>
 </div>
 </section>
@@ -2297,7 +2309,7 @@ appear in the listing of assigned values.<a href="#section-8.4-8" class="pilcrow
 <dl class="references">
 <dt id="DGRAM">[DGRAM]</dt>
         <dd>
-<span class="refAuthor">Pauly, T.</span>, <span class="refAuthor">Kinnear, E.</span>, and <span class="refAuthor">D. Schinazi</span>, <span class="refTitle">"An Unreliable Datagram Extension to QUIC"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-ietf-quic-datagram-05</span>, <time datetime="2021-10-01" class="refDate">1 October 2021</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-ietf-quic-datagram-05">https://datatracker.ietf.org/doc/html/draft-ietf-quic-datagram-05</a>&gt;</span>. </dd>
+<span class="refAuthor">Pauly, T.</span>, <span class="refAuthor">Kinnear, E.</span>, and <span class="refAuthor">D. Schinazi</span>, <span class="refTitle">"An Unreliable Datagram Extension to QUIC"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-ietf-quic-datagram-06</span>, <time datetime="2021-10-05" class="refDate">5 October 2021</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-ietf-quic-datagram-06">https://datatracker.ietf.org/doc/html/draft-ietf-quic-datagram-06</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 <dt id="H3">[H3]</dt>
         <dd>
