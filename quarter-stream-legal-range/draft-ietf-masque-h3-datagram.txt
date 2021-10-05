@@ -5,8 +5,8 @@
 MASQUE                                                       D. Schinazi
 Internet-Draft                                                Google LLC
 Intended status: Standards Track                               L. Pardue
-Expires: 7 April 2022                                         Cloudflare
-                                                          4 October 2021
+Expires: 8 April 2022                                         Cloudflare
+                                                          5 October 2021
 
 
                        Using Datagrams with HTTP
@@ -51,7 +51,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 7 April 2022.
+   This Internet-Draft will expire on 8 April 2022.
 
 Copyright Notice
 
@@ -223,13 +223,13 @@ Table of Contents
 
    Quarter Stream ID:  A variable-length integer that contains the value
       of the client-initiated bidirectional stream that this datagram is
-      associated with, divided by four (The division by four stems from
+      associated with, divided by four (the division by four stems from
       the fact that HTTP requests are sent on client-initiated
       bidirectional streams, and those have stream IDs that are
       divisible by four.).  The largest legal QUIC stream ID value is
-      2^62-1, so the largest legal value value of Quarter Stream ID is
-      2^62-1 / 4.  Receipt of a frame that includes a larger value MUST
-      be treated as a connection error of type FRAME_ENCODING_ERROR.
+      2^62-1, so the largest legal value of Quarter Stream ID is 2^62-1
+      / 4.  Receipt of a frame that includes a larger value MUST be
+      treated as a connection error of type FRAME_ENCODING_ERROR.
 
    Context ID:  A variable-length integer indicating the context ID of
       the datagram (see Section 2.1).  Whether or not this field is
