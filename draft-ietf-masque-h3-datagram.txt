@@ -774,7 +774,7 @@ Table of Contents
    Type:  A name or label for the capsule type.
 
    Value:  The value of the Capsule Type field (see Section 4.1) is a
-      62bit integer.
+      62-bit integer.
 
    Reference:  An optional reference to a specification for the type.
       This field MAY be empty.
@@ -815,7 +815,7 @@ Table of Contents
    Type:  A name or label for the datagram format type.
 
    Value:  The value of the Datagram Format Type field (see Section 2.2)
-      is a 62bit integer.
+      is a 62-bit integer.
 
    Reference:  An optional reference to a specification for the
       parameter.  This field MAY be empty.
@@ -842,7 +842,7 @@ Table of Contents
    Type:  A name or label for the close code.
 
    Value:  The value of the Close Code field (see Section 4.4.3) is a
-      62bit integer.
+      62-bit integer.
 
    Reference:  An optional reference to a specification for the
       parameter.  This field MAY be empty.
