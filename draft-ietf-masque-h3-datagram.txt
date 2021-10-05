@@ -118,6 +118,42 @@ Table of Contents
    demultiplexing layer.  Additionally, this document defines how to
    convey datagrams over prior versions of HTTP.
 
+   This document is structured as follows:
+
+   *  Section 2 presents core concepts for multiplexing across HTTP
+      versions.
+
+      -  Section 2.1 defines datagram contexts, an optional end-to-end
+         multiplexing concept scoped to each HTTP request.
+
+      -  Section 2.2 defines datagram formats, which are scoped to
+         contexts.  Formats communicate the format and encoding of
+         datagrams sent using the associated context.
+
+      -  Contexts are identified using a variable-length integer.
+         Requirements for allocating identifier values are detailed in
+         Section 2.3.
+
+   *  Section 3 defines how QUIC DATAGRAM frames are used with HTTP/3.
+      Section 5 defines an HTTP/3 setting that endpoints can use to
+      advertise support of the frame.
+
+   *  Section 4 introduces the Capsule Protocol and the "data stream"
+      concept.  Data streams are initiated using special-purpose HTTP
+      requests, after which Capsules, an end-to-end message, can be
+      sent.
+
+      -  The following Capsule types are defined, together with guidance
+         for defining new types:
+
+         o  REGISTER_DATAGRAM_CONTEXT Section 4.4.1
+
+         o  REGISTER_DATAGRAM_NO_CONTEXT Section 4.4.2
+
+         o  CLOSE_DATAGRAM_CONTEXT Section 4.4.3
+
+         o  DATAGRAM Section 4.4.4
+
 1.1.  Conventions and Definitions
 
    The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT",
