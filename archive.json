@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2021-09-28T01:05:14.057582+00:00",
+  "timestamp": "2021-10-05T01:05:15.974552+00:00",
   "repo": "ietf-wg-masque/draft-ietf-masque-h3-datagram",
   "labels": [
     {
@@ -6831,6 +6831,139 @@
           "createdAt": "2021-09-27T23:24:00Z",
           "updatedAt": "2021-09-27T23:24:00Z",
           "comments": []
+        }
+      ]
+    },
+    {
+      "number": 98,
+      "id": "PR_kwDODOpKfc4sqsMt",
+      "title": "document the document structure",
+      "url": "https://github.com/ietf-wg-masque/draft-ietf-masque-h3-datagram/pull/98",
+      "state": "OPEN",
+      "author": "LPardue",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "fixes #92 \r\n\r\nerr'ing on the side of succinct ",
+      "createdAt": "2021-10-04T23:37:52Z",
+      "updatedAt": "2021-10-04T23:46:53Z",
+      "baseRepository": "ietf-wg-masque/draft-ietf-masque-h3-datagram",
+      "baseRefName": "main",
+      "baseRefOid": "c3f5b8bd96cb44da63bb66e7b2d95b7d6fb76220",
+      "headRepository": "ietf-wg-masque/draft-ietf-masque-h3-datagram",
+      "headRefName": "doc-doc-structure",
+      "headRefOid": "5cb9e0038dd7c4ccdd18e6d7ffcc7c3f6887982c",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [],
+      "reviews": [
+        {
+          "id": "PRR_kwDODOpKfc4t8mzs",
+          "commit": {
+            "abbreviatedOid": "5cb9e00"
+          },
+          "author": "DavidSchinazi",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "Thanks for doing this!",
+          "createdAt": "2021-10-04T23:46:53Z",
+          "updatedAt": "2021-10-04T23:46:53Z",
+          "comments": []
+        }
+      ]
+    },
+    {
+      "number": 99,
+      "id": "PR_kwDODOpKfc4sqtIm",
+      "title": "quarter stream ID has a legal range, state it and punishment for brea\u2026",
+      "url": "https://github.com/ietf-wg-masque/draft-ietf-masque-h3-datagram/pull/99",
+      "state": "OPEN",
+      "author": "LPardue",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "\u2026king hte law\r\n\r\nAlso, switch to format to beatuiful superscript HTML rendering as used by RFC 9000.\r\n\r\nfixes #93 ",
+      "createdAt": "2021-10-04T23:48:36Z",
+      "updatedAt": "2021-10-05T00:30:18Z",
+      "baseRepository": "ietf-wg-masque/draft-ietf-masque-h3-datagram",
+      "baseRefName": "main",
+      "baseRefOid": "c3f5b8bd96cb44da63bb66e7b2d95b7d6fb76220",
+      "headRepository": "ietf-wg-masque/draft-ietf-masque-h3-datagram",
+      "headRefName": "quarter-stream-legal-range",
+      "headRefOid": "bd22748ab03ade939c98fddba524154161c63b2d",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [],
+      "reviews": [
+        {
+          "id": "PRR_kwDODOpKfc4t8od1",
+          "commit": {
+            "abbreviatedOid": "8df31dc"
+          },
+          "author": "DavidSchinazi",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "Nice. Approved modulo a couple nits",
+          "createdAt": "2021-10-05T00:04:33Z",
+          "updatedAt": "2021-10-05T00:05:58Z",
+          "comments": [
+            {
+              "originalPosition": 15,
+              "body": "nit: if you remove the dot, then remove the following uppercase?\r\n```suggestion\r\nbidirectional stream that this datagram is associated with, divided by four (the\r\n```",
+              "createdAt": "2021-10-05T00:04:33Z",
+              "updatedAt": "2021-10-05T00:05:58Z"
+            },
+            {
+              "originalPosition": 20,
+              "body": "That's just too much value :P\r\n```suggestion\r\nso the largest legal value of Quarter Stream ID is 2<sup>62</sup>-1 / 4.\r\n```",
+              "createdAt": "2021-10-05T00:05:44Z",
+              "updatedAt": "2021-10-05T00:05:58Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDODOpKfc4t8pMy",
+          "commit": {
+            "abbreviatedOid": "8df31dc"
+          },
+          "author": "LPardue",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2021-10-05T00:12:04Z",
+          "updatedAt": "2021-10-05T00:12:04Z",
+          "comments": [
+            {
+              "originalPosition": 15,
+              "body": "derp",
+              "createdAt": "2021-10-05T00:12:04Z",
+              "updatedAt": "2021-10-05T00:12:04Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDODOpKfc4t8q2F",
+          "commit": {
+            "abbreviatedOid": "bd22748"
+          },
+          "author": "DavidSchinazi",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2021-10-05T00:30:18Z",
+          "updatedAt": "2021-10-05T00:30:18Z",
+          "comments": [
+            {
+              "originalPosition": 19,
+              "body": "Well now we have an extra dot I think\r\n```suggestion\r\ndivisible by four). The largest legal QUIC stream ID value is 2<sup>62</sup>-1,\r\n```",
+              "createdAt": "2021-10-05T00:30:18Z",
+              "updatedAt": "2021-10-05T00:30:19Z"
+            }
+          ]
         }
       ]
     }
