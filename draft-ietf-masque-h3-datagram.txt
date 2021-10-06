@@ -743,6 +743,10 @@ Table of Contents
 
 6.  Prioritization
 
+   Data streams (see Section 4.1) can be prioritized using any means
+   suited to stream or request prioritization.  For example, Section 11
+   of [PRIORITY].
+
    Prioritization of HTTP/3 datagrams is not defined in this document.
    Future extensions MAY define how to prioritize datagrams, and MAY
    define signaling to allow endpoints to communicate their
@@ -918,6 +922,12 @@ Table of Contents
               May 2017, <https://datatracker.ietf.org/doc/html/rfc8174>.
 
 9.2.  Informative References
+
+   [PRIORITY] Oku, K. and L. Pardue, "Extensible Prioritization Scheme
+              for HTTP", Work in Progress, Internet-Draft, draft-ietf-
+              httpbis-priority-06, 30 September 2021,
+              <https://datatracker.ietf.org/doc/html/draft-ietf-httpbis-
+              priority-06>.
 
    [RFC8899]  Fairhurst, G., Jones, T., Tüxen, M., Rüngeler, I., and T.
               Völker, "Packetization Layer Path MTU Discovery for

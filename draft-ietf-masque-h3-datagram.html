@@ -2052,9 +2052,11 @@ endpoints negotiate the same draft version.<a href="#section-5.1-2" class="pilcr
       <h2 id="name-prioritization">
 <a href="#section-6" class="section-number selfRef">6. </a><a href="#name-prioritization" class="section-name selfRef">Prioritization</a>
       </h2>
-<p id="section-6-1">Prioritization of HTTP/3 datagrams is not defined in this document. Future
+<p id="section-6-1">Data streams (see <a href="#capsule-protocol" class="xref">Section 4.1</a>) can be prioritized using any means
+suited to stream or request prioritization. For example, <span><a href="https://datatracker.ietf.org/doc/html/draft-ietf-httpbis-priority-06#section-11" class="relref">Section 11</a> of [<a href="#PRIORITY" class="xref">PRIORITY</a>]</span>.<a href="#section-6-1" class="pilcrow">¶</a></p>
+<p id="section-6-2">Prioritization of HTTP/3 datagrams is not defined in this document. Future
 extensions MAY define how to prioritize datagrams, and MAY define signaling to
-allow endpoints to communicate their prioritization preferences.<a href="#section-6-1" class="pilcrow">¶</a></p>
+allow endpoints to communicate their prioritization preferences.<a href="#section-6-2" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="security">
@@ -2343,6 +2345,10 @@ appear in the listing of assigned values.<a href="#section-8.4-6" class="pilcrow
 <a href="#section-9.2" class="section-number selfRef">9.2. </a><a href="#name-informative-references" class="section-name selfRef">Informative References</a>
         </h3>
 <dl class="references">
+<dt id="PRIORITY">[PRIORITY]</dt>
+        <dd>
+<span class="refAuthor">Oku, K.</span> and <span class="refAuthor">L. Pardue</span>, <span class="refTitle">"Extensible Prioritization Scheme for HTTP"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-ietf-httpbis-priority-06</span>, <time datetime="2021-09-30" class="refDate">30 September 2021</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-ietf-httpbis-priority-06">https://datatracker.ietf.org/doc/html/draft-ietf-httpbis-priority-06</a>&gt;</span>. </dd>
+<dd class="break"></dd>
 <dt id="RFC8899">[RFC8899]</dt>
       <dd>
 <span class="refAuthor">Fairhurst, G.</span>, <span class="refAuthor">Jones, T.</span>, <span class="refAuthor">Tüxen, M.</span>, <span class="refAuthor">Rüngeler, I.</span>, and <span class="refAuthor">T. Völker</span>, <span class="refTitle">"Packetization Layer Path MTU Discovery for Datagram Transports"</span>, <span class="seriesInfo">RFC 8899</span>, <span class="seriesInfo">DOI 10.17487/RFC8899</span>, <time datetime="2020-09" class="refDate">September 2020</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/rfc8899">https://datatracker.ietf.org/doc/html/rfc8899</a>&gt;</span>. </dd>
