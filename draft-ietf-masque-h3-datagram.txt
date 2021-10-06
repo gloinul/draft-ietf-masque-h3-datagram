@@ -5,8 +5,8 @@
 MASQUE                                                       D. Schinazi
 Internet-Draft                                                Google LLC
 Intended status: Standards Track                               L. Pardue
-Expires: 8 April 2022                                         Cloudflare
-                                                          5 October 2021
+Expires: 9 April 2022                                         Cloudflare
+                                                          6 October 2021
 
 
                        Using Datagrams with HTTP
@@ -51,7 +51,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 8 April 2022.
+   This Internet-Draft will expire on 9 April 2022.
 
 Copyright Notice
 
@@ -570,8 +570,9 @@ Table of Contents
    Context ID:  The context ID to close.
 
    Close Code:  The close code allows an endpoint to provide additional
-      information as to why a datagram context was closed.  The codes
-      are defined in Section 4.4.3.1.
+      information as to why a datagram context was closed.
+      Section 4.4.3.1 defines a set of codes, the circumstances under
+      which an implementation sends them, and how receivers react.
 
    Close Details:  This is meant for debugging purposes.  It consists of
       a human-readable string encoded in UTF-8.
@@ -600,11 +601,17 @@ Table of Contents
 
 4.4.3.1.  Close Codes
 
-   This specification defines the close codes below.  Their numeric
-   values are in Section 8.4.
+   Close codes are intended to allow implementations to react
+   differently when they receive them - for example, some close codes
+   require the receiver to not open another context under certain
+   conditions.
 
-   NO_ERROR:  This indicates that the registration was closed without
-      any additional information.
+   This specification defines the close codes below.  Their numeric
+   values are in Section 8.4.  Extensions to this mechanism MAY define
+   new close codes and they SHOULD state how receivers react to them.
+
+   NO_ERROR:  This indicates that a context was closed without any
+      action specified for the receiver.
 
    UNKNOWN_FORMAT:  This indicates that the sender does not know how to
       interpret the datagram format type associated with this context.
