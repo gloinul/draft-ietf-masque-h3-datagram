@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2021-10-05T01:05:15.974552+00:00",
+  "timestamp": "2021-10-07T01:08:08.090750+00:00",
   "repo": "ietf-wg-masque/draft-ietf-masque-h3-datagram",
   "labels": [
     {
@@ -1590,7 +1590,7 @@
       "labels": [],
       "body": "This has been sent to the MASQUE WG mailing list in hopes to get some discussion there. However, I want an issue that tracks this: \r\n\r\nIn the work of writing up our Connect-IP proposal (https://datatracker.ietf.org/doc/draft-kuehlewind-masque-connect-ip/) we looked into how to deal with MTU issues effectively. Our conclusion was that this is going to be a general problem for any user of HTTP Datagrams. Thus, we like to propose that MTU handling is done within HTTP datagram. \r\n\r\nThis email will start explaining what we see as requirements for a MTU signaling solution for HTTP datagram, then propose a potential solution. \r\n\r\n\r\nLets start with a figure that provides us with a framework to discuss the requirements:\r\n\r\n```\r\n+--------+ Path#1A +--------+        +-------+        +--------+\r\n|Client A|<------->| HTTP   | Path#2 | MASQUE| Path#3 |        |\r\n+--------+         | Inter- |<------>| Server|<------>| Target |\r\n+--------+ Path#1B | mediary|        |(proxy)|        |        |\r\n|Client B|<------->|        |        |       |        |        |\r\n+--------+         +--------+        +-------+        +--------+\r\n```\r\n\r\n\r\nI think what makes this a bit more complex is the fact that we need to consider HTTP intermediaries, such as a front end load balancer that terminates a first QUIC and HTTP/3 connection between the client and that intermediary. From that intermediary another HTTP connection is used towards the HTTP server that consumes and produces the HTTP datagrams, and in the case of CONNECT-UDP and CONNECT-IP it also have a third path towards the target to consider. This figure includes two clients to remind us to consider that the HTTP intermediary may actually aggregate the HTTP request and response and HTTP datagram over one HTTP/2 or HTTP/3 connection over Path #2. In the case of MTU this complicates things more as the proxy cant assume that all HTTP requests have the same MTU for its datagrams on a HTTP/3 connection. And the Intermediary will be the entity that have direct knowledge of the client facing as well as the next hop MTU over the HTTP connections that may all differ in MTU. \r\n\r\nWe also have to consider the fact that the underlying transport connection may at any time be subject to a IP MTU change due to route change for the path between the nodes. In addition if one have enabled PMTUD in TCP or QUIC a larger MTU on the individual path could be made available and in some case desirable to use. Thus, we need to consider dynamic changes during the HTTP connections life time and each HTTP request response pairs usage of HTTP datagram. \r\n\r\nSo when using HTTP/3 datagram there are a strict MTU limit on the individual datagrams for it to be possible to be sent as QUIC datagrams, and not being forced to be encapsulated as CAPSULES over the reliable stream. This is clearly a possibility but results in that the datagrams are sent reliable and in order for each HTTP request, i.e. Connect-UDP or CONNECT-IP request. Also in case some end-to-end payloads fit in HTTP datagrams and others don\u2019t there is potential for reordering among the payloads. Thus, to avoid this the client and the proxy needs to determine what the lowest currently supported HTTP datagram size on the path. \r\n\r\nFor each QUIC connection the end point will know what the initial MTU value is for this path when the HTTP/3 connection has been successful completed. However, that knowledge will not be available if one attempt to construct and send the HTTP request prior to connection establishment has concluded.\r\n\r\nSo the requirements we see for an MTU handling solution for HTTP Datagrams are the following.\r\n\r\n1)\tHop-by-hop signaling across the HTTP entities of the lowest MTU of any sub-path\r\n2)\tNeeds to be associated to a particular HTTP request or end-to-end path to support aggregation by HTTP intermediaries\r\n3)\tEndpoints needs to be able to initiate update of the MTU value upon detection of any changes during HTTP Datagram streams lifetime.\r\n4)\tHTTP Intermediaries needs to be able to initiate updates of the MTU value upon detecting MTU changes from the individual HTTP connections.\r\n\r\nSolution proposal\r\n==============\r\n\r\nA new HTTP Datagram Capsule is defined for MTU value exchange. This one is intended for the HTTP intermediary that needs to interpret, update or initiate sending of it. Thus, it needs to be a fixed registered type so it can be easily processed. It can also be exchanged in parallel to the Register_Datagram_* capsules as at that point the underlying HTTP connection is established and initial HTTP Datagram values will be known. A capsule will also travel all the way to the end. And an intermediary can initiate one in each direction for request paths. The only downside I see of this is that one is required per open stream when MTU changes occurs. Maybe someone have an idea of how to handle signaling when aggregating multiple endpoints streams onto one HTTP/3 connection. \r\n\r\nTo make it more efficient, rather than sending one MTU capsule per stream, an MTU capsule could list all streams it is applicable to. That way the number of MTU capsules would be no more than the number of end-to-end paths actually used. \r\n\r\n",
       "createdAt": "2021-07-13T12:38:22Z",
-      "updatedAt": "2021-07-19T07:09:26Z",
+      "updatedAt": "2021-10-05T23:51:13Z",
       "closedAt": null,
       "comments": [
         {
@@ -1634,6 +1634,13 @@
           "body": "Agree that for sufficiently large MTU you want the end-to-end PMTUD to work and dropping will be necessary. However, we are going to have requirements on minimal packet sizes, that is where we end up in needing a signal. In addition if the tunnel HTTP Datagram ingress knows the MTU, then for the MASQUE use cases it can send back the appropriate signal towards an remote IP point or through the API to the application using MASQUE. If an HTTP intermediary simply drop packets that are to large and send no signal back. Then the HTTP datagram ingress has no knowledge and no type of signal intended to speed up PMTUD is also sent. Which, makes results us from potentially breaking the IPv6 specification requirements in two ways when using it for CONNECT-IP. \r\n\r\nFirst we may not support the required datagram size of 1280 bytes.\r\nSecondly, we are not supporting the IPv6 PMTUD model of actually sending ICMPv6 PTBs. Yes, this may not work as well as it should, but it is still required functionality. \r\n",
           "createdAt": "2021-07-19T07:09:26Z",
           "updatedAt": "2021-07-19T07:09:26Z"
+        },
+        {
+          "author": "DavidSchinazi",
+          "authorAssociation": "COLLABORATOR",
+          "body": "This sounds like a good use case for [draft-schwartz-masque-h3-datagram-ping](https://datatracker.ietf.org/doc/draft-schwartz-masque-h3-datagram-ping/). It's a great example of a context ID extensions that can benefit multiple methods. As long as draft-ietf-masque-h3-datagram is extensible enough to allow this kind of extension, I don't think we need to solve this in draft-ietf-masque-h3-datagram.",
+          "createdAt": "2021-10-05T23:51:13Z",
+          "updatedAt": "2021-10-05T23:51:13Z"
         }
       ]
     },
@@ -1694,15 +1701,15 @@
       "id": "MDU6SXNzdWU5NDM1Mjk4Mjk=",
       "title": "Should there be a way to mass-register multiple context IDs?",
       "url": "https://github.com/ietf-wg-masque/draft-ietf-masque-h3-datagram/issues/67",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "gloinul",
       "authorAssociation": "NONE",
       "assignees": [],
       "labels": [],
       "body": "It appears that the current defined registration method is great when one have three formats and need three different context ID for the three different formats. It is not suitable if one end up in any combinatorial cases, like formats that combine different modules where one may suddenly have 128 potential different context IDs. Pre-registering all of them appears to create a significant overhead. We had some thoughts of actually carrying the DSCP + ECN values for an IP packet payload in the Context ID. That could require up to 256 Context IDs. And registering each value individually could be done, but ends up in a large number of registrations, likely with a Context Extension TLV that consumes additionally overhead. \r\n\r\nSo is there a need for mass registration of context IDs?",
       "createdAt": "2021-07-13T15:10:29Z",
-      "updatedAt": "2021-09-10T19:09:35Z",
-      "closedAt": null,
+      "updatedAt": "2021-10-05T16:31:52Z",
+      "closedAt": "2021-10-05T16:31:52Z",
       "comments": [
         {
           "author": "DavidSchinazi",
@@ -1731,6 +1738,13 @@
           "body": "From a parsing standpoint, the first thing you need to know is whether datagrams contain a context ID or not, so there's obviously value in context/no-context.\r\n\r\nNext, you need to be able to map a particular context to a purpose.  That _might_ be done with Context Extensions, in which case there's value in declaring them.  But it might also be done in HTTP headers, in which case the registration of a particular context before use might be unnecessary.  (Obviously you'll still need to register locally with your HTTP implementation which contexts you should receive the datagrams for once you read the headers.)\r\n\r\nContext Extensions feel more useful in declaring parameters for a particular purpose -- but if that's how they're used, I don't see the point of the global registry.  Each purpose is essentially defining a custom datagram protocol at that point and can define what the parameters in the Extensions mean for that purpose.",
           "createdAt": "2021-07-21T20:26:32Z",
           "updatedAt": "2021-07-21T20:26:32Z"
+        },
+        {
+          "author": "DavidSchinazi",
+          "authorAssociation": "COLLABORATOR",
+          "body": "We haven't seen more use-cases for a context mass registration system, so I'm closing this issue for now. We can reopen it if use-cases arise.",
+          "createdAt": "2021-10-05T16:31:52Z",
+          "updatedAt": "2021-10-05T16:31:52Z"
         }
       ]
     },
@@ -1739,15 +1753,15 @@
       "id": "MDU6SXNzdWU5NDM5NzQxNDM=",
       "title": "Merge REGISTER_DATAGRAM_CONTEXT and REGISTER_DATAGRAM_NO_CONTEXT capsules",
       "url": "https://github.com/ietf-wg-masque/draft-ietf-masque-h3-datagram/issues/68",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "vasilvv",
       "authorAssociation": "NONE",
       "assignees": [],
       "labels": [],
       "body": "There are two possible ways to encode REGISTER_DATAGRAM capsule: using two different capsules (current variant), or using a single capsule with a field indicating whether the context is present.  While those two are largely isomorphic, I feel like the latter would help us avoid situations where libraries or intermediaries only support one but not the other.",
       "createdAt": "2021-07-14T02:26:19Z",
-      "updatedAt": "2021-07-22T21:16:32Z",
-      "closedAt": null,
+      "updatedAt": "2021-10-05T16:32:48Z",
+      "closedAt": "2021-10-05T16:32:48Z",
       "comments": [
         {
           "author": "LPardue",
@@ -1762,6 +1776,13 @@
           "body": "Yes, it's entirely equivalent to say there's a one-bit flag in the capsule type indicating whether (0x0) the Context ID is absent and the stream will not use Context IDs, or (0x01) the Context ID field is present.  I don't feel like there needs to be a wire format difference here, and how we spell it in the draft is purely editorial.",
           "createdAt": "2021-07-22T21:16:32Z",
           "updatedAt": "2021-07-22T21:16:32Z"
+        },
+        {
+          "author": "DavidSchinazi",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Since this is purely editorial, I'm going to close with no action for now. We can reopen if we have more information.",
+          "createdAt": "2021-10-05T16:32:48Z",
+          "updatedAt": "2021-10-05T16:32:48Z"
         }
       ]
     },
@@ -1901,15 +1922,15 @@
       "id": "MDU6SXNzdWU5NDkwMDE0MDk=",
       "title": "Datagrams with Unidirectional Streams",
       "url": "https://github.com/ietf-wg-masque/draft-ietf-masque-h3-datagram/issues/74",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "MikeBishop",
-      "authorAssociation": "NONE",
+      "authorAssociation": "CONTRIBUTOR",
       "assignees": [],
       "labels": [],
       "body": "In #47, the conclusion was that server push didn't have a need to use datagrams, and I'm fine with that decision.  However, it's a subset of a larger question.\r\n\r\nI'm slightly concerned that using the \"quarter stream ID\" as the namespace forecloses the use of datagrams associated to anything except a request.  For example, we discussed during HTTP/3 development that it might be reasonable to shift certain control frames to datagrams if that had been an option in the protocol.\r\n\r\nI don't see that the quarter ID buys us anything beyond saving a byte or four in certain ranges of stream IDs, and it introduces an element in the protocol where we're presenting the Stream ID in a different format than every other instance.  It forecloses options that we might find a use for in the future, even if it's not required for CONNECT-UDP.\r\n\r\nWhy not simply use the stream ID, like everywhere else, and keep the same rules about the stream needing to be open for sending?  Where currently we say client, we could equally refer to stream initiators.",
       "createdAt": "2021-07-20T19:30:11Z",
-      "updatedAt": "2021-07-20T21:21:39Z",
-      "closedAt": null,
+      "updatedAt": "2021-10-05T23:44:10Z",
+      "closedAt": "2021-10-05T23:44:09Z",
       "comments": [
         {
           "author": "DavidSchinazi",
@@ -1917,6 +1938,13 @@
           "body": "Do you have an example of a use case that would benefit from associating a datagram with a non-client-initiated-bidirectional-stream?\r\n\r\nI'll note that the quarter stream ID doesn't foreclose much because since these new use cases will require their own setting so we'll have the option of adjusting the encoding based on the presence of that setting",
           "createdAt": "2021-07-20T21:21:39Z",
           "updatedAt": "2021-07-20T21:21:39Z"
+        },
+        {
+          "author": "DavidSchinazi",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Closing due to lack of activity. Datagrams are end-to-end and unidirectional streams are hop-by-hop. Let's reopen if we find a use case for this.",
+          "createdAt": "2021-10-05T23:44:09Z",
+          "updatedAt": "2021-10-05T23:44:09Z"
         }
       ]
     },
@@ -1990,15 +2018,15 @@
       "id": "MDU6SXNzdWU5NTE4MTI5ODI=",
       "title": "Consider splitting DATAGRAM Capsule into two types",
       "url": "https://github.com/ietf-wg-masque/draft-ietf-masque-h3-datagram/issues/81",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "LPardue",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
       "labels": [],
       "body": "The DATAGRAM capsule has an optional Context ID field. The presence of this field is based on state held in stream objects, not signalled on the wire itself. \r\n\r\nIME it's rare that the parsing of an HTTP/3 frame (in this case, the CAPSULE frame that holds the capsule) is dependent on state in this way.\r\n\r\nSo the suggestion is to define DATAGRAM/DATAGRAM_NO_CONTEXT capsule types which would allow stateless parsing of frames. After a whole frame is read, receivers can then validate ordering rules such REGISTER_CONTEXT followed by DATAGRAM capsule, REGISTER_NO_CONTEXT followed by DATAGRAM_NO_CONTEXT.\r\n\r\nThis would also allow an early shortcut exit where the CAPSULE frame length can be used to validate that the DATAGRAM capsule is suitable large.",
       "createdAt": "2021-07-23T18:35:37Z",
-      "updatedAt": "2021-09-26T14:24:43Z",
-      "closedAt": null,
+      "updatedAt": "2021-10-05T23:42:16Z",
+      "closedAt": "2021-10-05T23:42:16Z",
       "comments": [
         {
           "author": "LPardue",
@@ -2048,6 +2076,27 @@
           "body": "Daivd said:\r\n> Since this stateful logic is required to parse QUIC DATAGRAM frames, I'd prefer the format of DATAGRAM capsules to closely match that of QUIC DATAGRAM frames.\r\n\r\nI'd overlooked this point earlier. There's not a cheap way to incorporate a CONTEXT/NO_CONTEXT discriminator into the HTTP/3 DATAGRAM frame. Spending a varint on that seems like a waste.",
           "createdAt": "2021-09-26T14:24:43Z",
           "updatedAt": "2021-09-26T14:24:43Z"
+        },
+        {
+          "author": "DavidSchinazi",
+          "authorAssociation": "COLLABORATOR",
+          "body": "@LPardue do you have further thoughts, or should we close this issue with no action?",
+          "createdAt": "2021-10-05T22:34:05Z",
+          "updatedAt": "2021-10-05T22:34:05Z"
+        },
+        {
+          "author": "LPardue",
+          "authorAssociation": "COLLABORATOR",
+          "body": "With the recent changes to the Capsule protocol definition I believe this\nissue is mooted. Let's close it. But on grounds that I reserve the right to\nreopen the issue should I find the same problem when implementing the new\ndesign :-)\n",
+          "createdAt": "2021-10-05T23:38:34Z",
+          "updatedAt": "2021-10-05T23:38:34Z"
+        },
+        {
+          "author": "DavidSchinazi",
+          "authorAssociation": "COLLABORATOR",
+          "body": "You have the right to reopen any and all issues :-P\r\nClosing based on discussion above.",
+          "createdAt": "2021-10-05T23:42:16Z",
+          "updatedAt": "2021-10-05T23:42:16Z"
         }
       ]
     },
@@ -2178,7 +2227,7 @@
       "id": "I_kwDODOpKfc48C9oB",
       "title": "Describe document structure and/or terms in intro section",
       "url": "https://github.com/ietf-wg-masque/draft-ietf-masque-h3-datagram/issues/92",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "LPardue",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
@@ -2187,8 +2236,8 @@
       ],
       "body": "There's now several different concepts to wrangle in this document. Reading from the top, we first tackle multiplexing (the major motivation for the document), then the frame, then capsules. Capsules underpin the mechanics of multiplexing. I don't think we can fix this chicken and egg problem but adding a brief overview of the concepts and terms before they are tackled in the prose could help readability.",
       "createdAt": "2021-09-26T14:37:43Z",
-      "updatedAt": "2021-09-27T16:15:48Z",
-      "closedAt": null,
+      "updatedAt": "2021-10-05T11:26:06Z",
+      "closedAt": "2021-10-05T11:26:06Z",
       "comments": [
         {
           "author": "DavidSchinazi",
@@ -2204,15 +2253,15 @@
       "id": "I_kwDODOpKfc48C_I6",
       "title": "Quarter Stream ID range is smaller than Stream ID range",
       "url": "https://github.com/ietf-wg-masque/draft-ietf-masque-h3-datagram/issues/93",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "LPardue",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
       "labels": [],
       "body": "Stating the obvious here. But we're using value with a legal range larger than semantically legal. RFC 9000 has some similar caveats with MAX_STREAMS https://www.rfc-editor.org/rfc/rfc9000.html#section-19.11\r\n\r\nTo address this, the suggestion is to add something like\r\n\r\n>  The largest legal stream ID is 2^62 - 1, so this value cannot exceed (2^62-1) / 4. Receipt of a frame that includes a larger value MUST be treated as a connection error of type FRAME_ENCODING_ERROR",
       "createdAt": "2021-09-26T15:02:46Z",
-      "updatedAt": "2021-09-27T16:16:57Z",
-      "closedAt": null,
+      "updatedAt": "2021-10-05T11:25:52Z",
+      "closedAt": "2021-10-05T11:25:52Z",
       "comments": [
         {
           "author": "DavidSchinazi",
@@ -2254,15 +2303,15 @@
       "id": "I_kwDODOpKfc48DA9R",
       "title": "Consider a GENERAL_ERROR close code",
       "url": "https://github.com/ietf-wg-masque/draft-ietf-masque-h3-datagram/issues/95",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "LPardue",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
       "labels": [],
       "body": "There may be cases (imagine new capsule types) where somthing went wrong but none of the existing codes are appropriate. Signalling NO_ERROR is not appropriate and may be misleading.",
       "createdAt": "2021-09-26T15:29:59Z",
-      "updatedAt": "2021-09-27T19:16:27Z",
-      "closedAt": null,
+      "updatedAt": "2021-10-06T23:52:22Z",
+      "closedAt": "2021-10-06T23:52:22Z",
       "comments": [
         {
           "author": "DavidSchinazi",
@@ -2298,6 +2347,34 @@
           "body": "> How about we spin off \"ethos and intention\" to a new ticket?\r\n\r\nSure!\r\n\r\n> I'm all for bikeshedding a name - how about MAYBE_ERROR?\r\n\r\nI prefer UNKNOWN_ERROR to MAYBE_ERROR, but I don't care too much.\r\n\r\n> I realise that the current definition\r\n> \r\n> > NO_ERROR: This indicates that the registration was closed without any additional information.\r\n> \r\n> is slightly ambiguous as to whether the `Close Details\" field would be populated or not.\r\n\r\nAgreed. Perhaps something like:\r\n* NO_ERROR: This indicates that the registration was closed without any action specified for the receiver.\r\n\r\nI'm not loving that sentence, but my intent was to convey that close codes exist to carry some action or requirement of the receiver, and NO_ERROR carries no such action or requirement.",
           "createdAt": "2021-09-27T19:16:27Z",
           "updatedAt": "2021-09-27T19:16:27Z"
+        },
+        {
+          "author": "LPardue",
+          "authorAssociation": "COLLABORATOR",
+          "body": "I think #100 can handle the ethos stuff, I don't think we need to bother with an open and shut issue but if you do that's ok.\r\n\r\nThat leaves the remaining question about name. I think with the new text it becomes clearer that the \"NO_ERROR\" is really just \"CLOSED_WITH_NO_ACTION\" ",
+          "createdAt": "2021-10-06T22:18:59Z",
+          "updatedAt": "2021-10-06T22:18:59Z"
+        },
+        {
+          "author": "DavidSchinazi",
+          "authorAssociation": "COLLABORATOR",
+          "body": "I like #100. Beyond that, I don't much care about the name. Slight preference for NO_ERROR but I'm OK with CLOSED_WITH_NO_ACTION",
+          "createdAt": "2021-10-06T22:28:18Z",
+          "updatedAt": "2021-10-06T22:28:18Z"
+        },
+        {
+          "author": "LPardue",
+          "authorAssociation": "COLLABORATOR",
+          "body": "I'm happy without _another_ error code right now. So how about we close this ticket and spin off just a naming bikeshed issue?\r\n",
+          "createdAt": "2021-10-06T22:29:59Z",
+          "updatedAt": "2021-10-06T22:29:59Z"
+        },
+        {
+          "author": "DavidSchinazi",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Sounds good, closing this one. I'll let you open the naming issue :)",
+          "createdAt": "2021-10-06T23:52:22Z",
+          "updatedAt": "2021-10-06T23:52:22Z"
         }
       ]
     },
@@ -2306,15 +2383,15 @@
       "id": "I_kwDODOpKfc48DBKY",
       "title": "Capsules on data streams means we need some consideration about prioritization",
       "url": "https://github.com/ietf-wg-masque/draft-ietf-masque-h3-datagram/issues/96",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "LPardue",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
       "labels": [],
       "body": "Most likely just need a sentence saying that the data stream is treated the same regardless if capsules are used or not.",
       "createdAt": "2021-09-26T15:33:12Z",
-      "updatedAt": "2021-09-27T16:21:53Z",
-      "closedAt": null,
+      "updatedAt": "2021-10-06T23:51:46Z",
+      "closedAt": "2021-10-06T23:51:46Z",
       "comments": [
         {
           "author": "DavidSchinazi",
@@ -6839,24 +6916,26 @@
       "id": "PR_kwDODOpKfc4sqsMt",
       "title": "document the document structure",
       "url": "https://github.com/ietf-wg-masque/draft-ietf-masque-h3-datagram/pull/98",
-      "state": "OPEN",
+      "state": "MERGED",
       "author": "LPardue",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
       "labels": [],
       "body": "fixes #92 \r\n\r\nerr'ing on the side of succinct ",
       "createdAt": "2021-10-04T23:37:52Z",
-      "updatedAt": "2021-10-04T23:46:53Z",
+      "updatedAt": "2021-10-05T11:26:07Z",
       "baseRepository": "ietf-wg-masque/draft-ietf-masque-h3-datagram",
       "baseRefName": "main",
       "baseRefOid": "c3f5b8bd96cb44da63bb66e7b2d95b7d6fb76220",
       "headRepository": "ietf-wg-masque/draft-ietf-masque-h3-datagram",
       "headRefName": "doc-doc-structure",
       "headRefOid": "5cb9e0038dd7c4ccdd18e6d7ffcc7c3f6887982c",
-      "closedAt": null,
-      "mergedAt": null,
-      "mergedBy": null,
-      "mergeCommit": null,
+      "closedAt": "2021-10-05T11:26:07Z",
+      "mergedAt": "2021-10-05T11:26:06Z",
+      "mergedBy": "LPardue",
+      "mergeCommit": {
+        "oid": "e6dcb2440ddbbd62582c2b22b5919e27cb7cc483"
+      },
       "comments": [],
       "reviews": [
         {
@@ -6879,24 +6958,26 @@
       "id": "PR_kwDODOpKfc4sqtIm",
       "title": "quarter stream ID has a legal range, state it and punishment for brea\u2026",
       "url": "https://github.com/ietf-wg-masque/draft-ietf-masque-h3-datagram/pull/99",
-      "state": "OPEN",
+      "state": "MERGED",
       "author": "LPardue",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
       "labels": [],
       "body": "\u2026king hte law\r\n\r\nAlso, switch to format to beatuiful superscript HTML rendering as used by RFC 9000.\r\n\r\nfixes #93 ",
       "createdAt": "2021-10-04T23:48:36Z",
-      "updatedAt": "2021-10-05T00:30:18Z",
+      "updatedAt": "2021-10-05T11:25:53Z",
       "baseRepository": "ietf-wg-masque/draft-ietf-masque-h3-datagram",
       "baseRefName": "main",
       "baseRefOid": "c3f5b8bd96cb44da63bb66e7b2d95b7d6fb76220",
       "headRepository": "ietf-wg-masque/draft-ietf-masque-h3-datagram",
       "headRefName": "quarter-stream-legal-range",
-      "headRefOid": "bd22748ab03ade939c98fddba524154161c63b2d",
-      "closedAt": null,
-      "mergedAt": null,
-      "mergedBy": null,
-      "mergeCommit": null,
+      "headRefOid": "40dda79fa94035a3dbaef5a99ca5b8b13949aa96",
+      "closedAt": "2021-10-05T11:25:53Z",
+      "mergedAt": "2021-10-05T11:25:52Z",
+      "mergedBy": "LPardue",
+      "mergeCommit": {
+        "oid": "2b7191459f35e0e57f9ad23a185c4ea2f0ac789b"
+      },
       "comments": [],
       "reviews": [
         {
@@ -6964,6 +7045,117 @@
               "updatedAt": "2021-10-05T00:30:19Z"
             }
           ]
+        }
+      ]
+    },
+    {
+      "number": 100,
+      "id": "PR_kwDODOpKfc4s27XS",
+      "title": "state more clearly the purpose of close codes",
+      "url": "https://github.com/ietf-wg-masque/draft-ietf-masque-h3-datagram/pull/100",
+      "state": "MERGED",
+      "author": "LPardue",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "This borrows some of the spin off suggestions made during the discussion on #95. It does not address the issue itself. See that issue for next steps.",
+      "createdAt": "2021-10-06T22:14:15Z",
+      "updatedAt": "2021-10-06T23:50:37Z",
+      "baseRepository": "ietf-wg-masque/draft-ietf-masque-h3-datagram",
+      "baseRefName": "main",
+      "baseRefOid": "92a45bac93fee117a9acefb920a7c4c348d1b68a",
+      "headRepository": "ietf-wg-masque/draft-ietf-masque-h3-datagram",
+      "headRefName": "close-code-tweaks",
+      "headRefOid": "a4a6d41b13eb2fac1d910a660e1c62a749053fc8",
+      "closedAt": "2021-10-06T23:50:37Z",
+      "mergedAt": "2021-10-06T23:50:37Z",
+      "mergedBy": "DavidSchinazi",
+      "mergeCommit": {
+        "oid": "5f4744693785e4f63e121003d19e9e077c743dad"
+      },
+      "comments": [],
+      "reviews": [
+        {
+          "id": "PRR_kwDODOpKfc4uF2GX",
+          "commit": {
+            "abbreviatedOid": "26bfbbd"
+          },
+          "author": "DavidSchinazi",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "Approved modulo a typo",
+          "createdAt": "2021-10-06T22:26:29Z",
+          "updatedAt": "2021-10-06T22:27:14Z",
+          "comments": [
+            {
+              "originalPosition": 28,
+              "body": "```suggestion\r\n: This indicates that a context was closed without any action specified for the\r\nreceiver.\r\n```",
+              "createdAt": "2021-10-06T22:26:29Z",
+              "updatedAt": "2021-10-06T22:27:14Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDODOpKfc4uF25-",
+          "commit": {
+            "abbreviatedOid": "26bfbbd"
+          },
+          "author": "LPardue",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2021-10-06T22:31:21Z",
+          "updatedAt": "2021-10-06T22:31:22Z",
+          "comments": [
+            {
+              "originalPosition": 28,
+              "body": "deliberate mistake to ensure you're attentive, well done.",
+              "createdAt": "2021-10-06T22:31:21Z",
+              "updatedAt": "2021-10-06T22:31:22Z"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": 101,
+      "id": "PR_kwDODOpKfc4s3GnT",
+      "title": "state that data streams can be prioritized",
+      "url": "https://github.com/ietf-wg-masque/draft-ietf-masque-h3-datagram/pull/101",
+      "state": "MERGED",
+      "author": "LPardue",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "fixes #96 ",
+      "createdAt": "2021-10-06T22:43:02Z",
+      "updatedAt": "2021-10-06T23:51:46Z",
+      "baseRepository": "ietf-wg-masque/draft-ietf-masque-h3-datagram",
+      "baseRefName": "main",
+      "baseRefOid": "92a45bac93fee117a9acefb920a7c4c348d1b68a",
+      "headRepository": "ietf-wg-masque/draft-ietf-masque-h3-datagram",
+      "headRefName": "data-stream-priority",
+      "headRefOid": "033cbe4fdebeb81fd96a5fabd2a56026ff5a297e",
+      "closedAt": "2021-10-06T23:51:46Z",
+      "mergedAt": "2021-10-06T23:51:45Z",
+      "mergedBy": "DavidSchinazi",
+      "mergeCommit": {
+        "oid": "95b93dfc8b00bd4e9ec7e5eb6d95f16de47e70a2"
+      },
+      "comments": [],
+      "reviews": [
+        {
+          "id": "PRR_kwDODOpKfc4uGAFE",
+          "commit": {
+            "abbreviatedOid": "033cbe4"
+          },
+          "author": "DavidSchinazi",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2021-10-06T23:51:40Z",
+          "updatedAt": "2021-10-06T23:51:40Z",
+          "comments": []
         }
       ]
     }
