@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2021-10-07T01:08:08.090750+00:00",
+  "timestamp": "2021-10-10T01:07:45.071273+00:00",
   "repo": "ietf-wg-masque/draft-ietf-masque-h3-datagram",
   "labels": [
     {
@@ -2399,6 +2399,30 @@
           "body": "Adding that sentence sounds fine by me.",
           "createdAt": "2021-09-27T16:21:52Z",
           "updatedAt": "2021-09-27T16:21:52Z"
+        }
+      ]
+    },
+    {
+      "number": 102,
+      "id": "I_kwDODOpKfc48xVNb",
+      "title": "Update CONNECT-UDP examples to align with latest draft",
+      "url": "https://github.com/ietf-wg-masque/draft-ietf-masque-h3-datagram/issues/102",
+      "state": "CLOSED",
+      "author": "tfpauly",
+      "authorAssociation": "NONE",
+      "assignees": [],
+      "labels": [],
+      "body": "I'd be good to update the CONNECT-UDP examples to use the extended CONNECT protocol in the latest version of CONNECT-UDP.",
+      "createdAt": "2021-10-07T03:20:16Z",
+      "updatedAt": "2021-10-07T23:38:57Z",
+      "closedAt": "2021-10-07T23:38:57Z",
+      "comments": [
+        {
+          "author": "DavidSchinazi",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Ah good find, I forgot those.",
+          "createdAt": "2021-10-07T22:13:18Z",
+          "updatedAt": "2021-10-07T22:13:18Z"
         }
       ]
     }
@@ -7155,6 +7179,48 @@
           "body": "",
           "createdAt": "2021-10-06T23:51:40Z",
           "updatedAt": "2021-10-06T23:51:40Z",
+          "comments": []
+        }
+      ]
+    },
+    {
+      "number": 103,
+      "id": "PR_kwDODOpKfc4s6pkU",
+      "title": "fix CONNECT-UDP examples",
+      "url": "https://github.com/ietf-wg-masque/draft-ietf-masque-h3-datagram/pull/103",
+      "state": "MERGED",
+      "author": "DavidSchinazi",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "Fixes #102 ",
+      "createdAt": "2021-10-07T22:16:28Z",
+      "updatedAt": "2021-10-07T23:39:00Z",
+      "baseRepository": "ietf-wg-masque/draft-ietf-masque-h3-datagram",
+      "baseRefName": "main",
+      "baseRefOid": "73c3d0b8d5d46cf3840a5976fdd204b0fb43f68d",
+      "headRepository": "ietf-wg-masque/draft-ietf-masque-h3-datagram",
+      "headRefName": "example-connect-udp",
+      "headRefOid": "7c6ba63de1bc5ee5009f333668f501d7111c92c7",
+      "closedAt": "2021-10-07T23:38:57Z",
+      "mergedAt": "2021-10-07T23:38:57Z",
+      "mergedBy": "DavidSchinazi",
+      "mergeCommit": {
+        "oid": "8d79e92675291ac1ea2cb50a43e296bb35b299fa"
+      },
+      "comments": [],
+      "reviews": [
+        {
+          "id": "PRR_kwDODOpKfc4uKYXY",
+          "commit": {
+            "abbreviatedOid": "7c6ba63"
+          },
+          "author": "LPardue",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2021-10-07T23:13:37Z",
+          "updatedAt": "2021-10-07T23:13:37Z",
           "comments": []
         }
       ]
