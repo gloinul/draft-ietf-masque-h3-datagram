@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2021-10-10T01:07:45.071273+00:00",
+  "timestamp": "2021-10-14T01:05:43.585988+00:00",
   "repo": "ietf-wg-masque/draft-ietf-masque-h3-datagram",
   "labels": [
     {
@@ -2423,6 +2423,37 @@
           "body": "Ah good find, I forgot those.",
           "createdAt": "2021-10-07T22:13:18Z",
           "updatedAt": "2021-10-07T22:13:18Z"
+        }
+      ]
+    },
+    {
+      "number": 104,
+      "id": "I_kwDODOpKfc49B8LI",
+      "title": "Who owns the registries created by this document?",
+      "url": "https://github.com/ietf-wg-masque/draft-ietf-masque-h3-datagram/issues/104",
+      "state": "OPEN",
+      "author": "LPardue",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "The HTTP/3 spec was \"contracted out to the QUIC WG\", but the registries it establishes are given back to the the HTTP WG\r\n\r\n> The initial allocations in these registries created in this document\r\n   are all assigned permanent status and list a change controller of the\r\n   IETF and a contact of the HTTP working group (ietf-http-wg@w3.org).\r\n\r\nThis spec defines some new registries, it isn't clear to me which WG would \"own\" the registry after we are done with this spec.",
+      "createdAt": "2021-10-12T14:52:23Z",
+      "updatedAt": "2021-10-12T16:14:48Z",
+      "closedAt": null,
+      "comments": [
+        {
+          "author": "DavidSchinazi",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Technically, IANA registries aren't owned by Working Groups. But adding the HTTP working group as a contact for the initial entries sounds fine by me. But I'd prefer to put this on hold until we're closer to publication.",
+          "createdAt": "2021-10-12T16:08:51Z",
+          "updatedAt": "2021-10-12T16:08:51Z"
+        },
+        {
+          "author": "LPardue",
+          "authorAssociation": "COLLABORATOR",
+          "body": "WFM!",
+          "createdAt": "2021-10-12T16:14:48Z",
+          "updatedAt": "2021-10-12T16:14:48Z"
         }
       ]
     }
