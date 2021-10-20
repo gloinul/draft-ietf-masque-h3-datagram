@@ -82,7 +82,7 @@ Table of Contents
      4.3.  Intermediary Processing
      4.4.  Capsule Types
        4.4.1.  The Datagram Registration Capsules
-       4.4.2.  The CLOSE_DATAGRAM_CONTEXT Capsule
+       4.4.2.  The Datagram Close Capsule
        4.4.3.  The Datagram Capsules
    5.  The H3_DATAGRAM HTTP/3 SETTINGS Parameter
    6.  The Sec-Use-Datagram-Contexts HTTP Header
@@ -278,11 +278,11 @@ Table of Contents
    Context ID:  A variable-length integer indicating the context ID of
       the datagram (see Section 2.1).  Whether or not this field is
       present depends on whether datagram contexts are in use on this
-      stream, see Section 6.  If this QUIC DATAGRAM frame arrives before
-      the QUIC DATA frame which carries the HTTP headers, then it is not
-      yet possible to parse this datagram and the receiver MUST either
-      drop that datagram silently or buffer it temporarily while
-      awaiting the HTTP headers.
+      stream, see Section 6.  If this QUIC DATAGRAM frame is reordered
+      and arrives before the receiver knows whether datagram contexts
+      are in use on this stream, then the receiver cannot parse this
+      datagram and the receiver MUST either drop that datagram silently
+      or buffer it temporarily.
 
    HTTP Datagram Payload:  The payload of the datagram, whose semantics
       are defined by individual applications.  Note that this field can
@@ -454,7 +454,9 @@ Table of Contents
       REGISTER_DATAGRAM_CONTEXT capsules but not in REGISTER_DATAGRAM
       capsules.  If a REGISTER_DATAGRAM capsule is used on a stream
       where datagram contexts are in use, it is associated with context
-      ID 0.
+      ID 0.  REGISTER_DATAGRAM_CONTEXT capsules MUST NOT carry context
+      ID 0 as that context ID is conveyed using the REGISTER_DATAGRAM
+      capsule.
 
    Datagram Format Type:  A variable-length integer that defines the
       semantics and encoding of the HTTP Datagram Payload field of
@@ -494,7 +496,7 @@ Table of Contents
    capsule, the client MUST abruptly terminate the corresponding stream
    with a stream error of type H3_GENERAL_PROTOCOL_ERROR.
 
-4.4.2.  The CLOSE_DATAGRAM_CONTEXT Capsule
+4.4.2.  The Datagram Close Capsule
 
    The CLOSE_DATAGRAM_CONTEXT capsule (see Section 9.3 for the value of
    the capsule type) allows an endpoint to inform its peer that it will
@@ -599,7 +601,9 @@ Table of Contents
       the datagram (see Section 2.1).  This field is present in
       DATAGRAM_WITH_CONTEXT capsules but not in DATAGRAM capsules.  If a
       DATAGRAM capsule is used on a stream where datagram contexts are
-      in use, it is associated with context ID 0.
+      in use, it is associated with context ID 0.  DATAGRAM_WITH_CONTEXT
+      capsules MUST NOT carry context ID 0 as that context ID is
+      conveyed using the DATAGRAM capsule.
 
    HTTP Datagram Payload:  The payload of the datagram, whose semantics
       are defined by individual applications.  Note that this field can

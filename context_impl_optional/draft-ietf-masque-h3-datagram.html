@@ -1172,7 +1172,7 @@ document defines how to convey datagrams over prior versions of HTTP.<a href="#s
                     <p id="section-toc.1-1.4.2.4.2.1.1"><a href="#section-4.4.1" class="xref">4.4.1</a>.  <a href="#name-the-datagram-registration-c" class="xref">The Datagram Registration Capsules</a></p>
 </li>
                   <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.4.2.4.2.2">
-                    <p id="section-toc.1-1.4.2.4.2.2.1"><a href="#section-4.4.2" class="xref">4.4.2</a>.  <a href="#name-the-close_datagram_context-" class="xref">The CLOSE_DATAGRAM_CONTEXT Capsule</a></p>
+                    <p id="section-toc.1-1.4.2.4.2.2.1"><a href="#section-4.4.2" class="xref">4.4.2</a>.  <a href="#name-the-datagram-close-capsule" class="xref">The Datagram Close Capsule</a></p>
 </li>
                   <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.4.2.4.2.3">
                     <p id="section-toc.1-1.4.2.4.2.3.1"><a href="#section-4.4.3" class="xref">4.4.3</a>.  <a href="#name-the-datagram-capsules" class="xref">The Datagram Capsules</a></p>
@@ -1472,10 +1472,10 @@ Context ID:  </dt>
           <p id="section-3-3.4.1">A variable-length integer indicating the context ID of the datagram (see
 <a href="#datagram-contexts" class="xref">Section 2.1</a>). Whether or not this field is present depends on whether
 datagram contexts are in use on this stream, see <a href="#context-hdr" class="xref">Section 6</a>. If this QUIC
-DATAGRAM frame arrives before the QUIC DATA frame which carries the HTTP
-headers, then it is not yet possible to parse this datagram and the receiver
-MUST either drop that datagram silently or buffer it temporarily while awaiting
-the HTTP headers.<a href="#section-3-3.4.1" class="pilcrow">¶</a></p>
+DATAGRAM frame is reordered and arrives before the receiver knows whether
+datagram contexts are in use on this stream, then the receiver cannot parse
+this datagram and the receiver MUST either drop that datagram silently or
+buffer it temporarily.<a href="#section-3-3.4.1" class="pilcrow">¶</a></p>
 </dd>
         <dd class="break"></dd>
 <dt id="section-3-3.5">
@@ -1704,7 +1704,8 @@ Context ID:  </dt>
 <a href="#datagram-contexts" class="xref">Section 2.1</a>). This field is present in REGISTER_DATAGRAM_CONTEXT
 capsules but not in REGISTER_DATAGRAM capsules. If a REGISTER_DATAGRAM capsule
 is used on a stream where datagram contexts are in use, it is associated with
-context ID 0.<a href="#section-4.4.1-3.2.1" class="pilcrow">¶</a></p>
+context ID 0. REGISTER_DATAGRAM_CONTEXT capsules MUST NOT carry context ID 0 as
+that context ID is conveyed using the REGISTER_DATAGRAM capsule.<a href="#section-4.4.1-3.2.1" class="pilcrow">¶</a></p>
 </dd>
             <dd class="break"></dd>
 <dt id="section-4.4.1-3.3">
@@ -1750,8 +1751,8 @@ stream with a stream error of type H3_GENERAL_PROTOCOL_ERROR.<a href="#section-4
 </div>
 <div id="close-capsule">
 <section id="section-4.4.2">
-          <h4 id="name-the-close_datagram_context-">
-<a href="#section-4.4.2" class="section-number selfRef">4.4.2. </a><a href="#name-the-close_datagram_context-" class="section-name selfRef">The CLOSE_DATAGRAM_CONTEXT Capsule</a>
+          <h4 id="name-the-datagram-close-capsule">
+<a href="#section-4.4.2" class="section-number selfRef">4.4.2. </a><a href="#name-the-datagram-close-capsule" class="section-name selfRef">The Datagram Close Capsule</a>
           </h4>
 <p id="section-4.4.2-1">The CLOSE_DATAGRAM_CONTEXT capsule (see <a href="#iana-types" class="xref">Section 9.3</a> for the value of the
 capsule type) allows an endpoint to inform its peer that it will no longer send
@@ -1897,7 +1898,9 @@ Context ID:  </dt>
               <p id="section-4.4.3-3.2.1">A variable-length integer indicating the context ID of the datagram (see
 <a href="#datagram-contexts" class="xref">Section 2.1</a>). This field is present in DATAGRAM_WITH_CONTEXT capsules
 but not in DATAGRAM capsules. If a DATAGRAM capsule is used on a stream where
-datagram contexts are in use, it is associated with context ID 0.<a href="#section-4.4.3-3.2.1" class="pilcrow">¶</a></p>
+datagram contexts are in use, it is associated with context ID 0.
+DATAGRAM_WITH_CONTEXT capsules MUST NOT carry context ID 0 as that context ID
+is conveyed using the DATAGRAM capsule.<a href="#section-4.4.3-3.2.1" class="pilcrow">¶</a></p>
 </dd>
             <dd class="break"></dd>
 <dt id="section-4.4.3-3.3">
