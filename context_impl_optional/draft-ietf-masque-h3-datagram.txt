@@ -5,8 +5,8 @@
 MASQUE                                                       D. Schinazi
 Internet-Draft                                                Google LLC
 Intended status: Standards Track                               L. Pardue
-Expires: 22 April 2022                                        Cloudflare
-                                                         19 October 2021
+Expires: 23 April 2022                                        Cloudflare
+                                                         20 October 2021
 
 
                        Using Datagrams with HTTP
@@ -51,7 +51,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 22 April 2022.
+   This Internet-Draft will expire on 23 April 2022.
 
 Copyright Notice
 
@@ -232,10 +232,10 @@ Table of Contents
 
 2.3.  Context ID Allocation
 
-   Implementations of HTTP Datagrams which support datagram contexts
-   MUST provide a context ID allocation service.  That service will
-   allow applications co-located with HTTP to request a unique context
-   ID that they can subsequently use for their own purposes.  The HTTP
+   Implementations of HTTP Datagrams that support datagram contexts MUST
+   provide a context ID allocation service.  That service will allow
+   applications co-located with HTTP to request a unique context ID that
+   they can subsequently use for their own purposes.  The HTTP
    implementation will then parse the context ID of incoming HTTP
    Datagrams and use it to deliver the frame to the appropriate
    application context.
@@ -1001,7 +1001,7 @@ A.1.  CONNECT-UDP
 A.2.  CONNECT-UDP with Delayed Timestamp Extension
 
    In these examples, the client supports a CONNECT-UDP Timestamp
-   Extension which uses a different Datagram Format Type which carries a
+   Extension, which uses a different Datagram Format Type that carries a
    timestamp followed by the encapsulated UDP payload.
 
 A.2.1.  With Delay
