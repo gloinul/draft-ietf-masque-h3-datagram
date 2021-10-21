@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2021-10-14T01:05:43.585988+00:00",
+  "timestamp": "2021-10-21T01:14:38.969197+00:00",
   "repo": "ietf-wg-masque/draft-ietf-masque-h3-datagram",
   "labels": [
     {
@@ -2454,6 +2454,96 @@
           "body": "WFM!",
           "createdAt": "2021-10-12T16:14:48Z",
           "updatedAt": "2021-10-12T16:14:48Z"
+        }
+      ]
+    },
+    {
+      "number": 106,
+      "id": "I_kwDODOpKfc49gc_J",
+      "title": "Consider stream limits when parsing HTTP/3 datagrams",
+      "url": "https://github.com/ietf-wg-masque/draft-ietf-masque-h3-datagram/issues/106",
+      "state": "OPEN",
+      "author": "LPardue",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [
+        "LPardue"
+      ],
+      "labels": [],
+      "body": "We say:\r\n\r\n> If an HTTP/3 datagram is received and its Quarter Stream ID maps to a stream that has not yet been created, the receiver SHALL either drop that datagram silently or buffer it temporarily while awaiting the creation of the corresponding stream.\r\n\r\nThis has some parallels to Extensible Priorities where we are expected to handling an H3 frame that might reference a stream that has not yet been created (most likely due to reordering). We can't avoid reordering but we can be more conservative on the frames that do get buffered. \r\n\r\nhttps://httpwg.org/http-extensions/draft-ietf-httpbis-priority.html#section-7.2-6 says:\r\n\r\n> If a server receives a PRIORITY_UPDATE (type=0xF0700) with a Stream ID that is beyond the stream limits, this SHOULD be treated as a connection error of type H3_ID_ERROR. Generating an error is not mandatory because HTTP/3 implementations might have practical barriers to determining the active stream concurrency limit that is applied by the QUIC layer.\r\n\r\nWe can probably recommend something similar here.",
+      "createdAt": "2021-10-20T23:43:38Z",
+      "updatedAt": "2021-10-21T00:44:07Z",
+      "closedAt": null,
+      "comments": [
+        {
+          "author": "DavidSchinazi",
+          "authorAssociation": "COLLABORATOR",
+          "body": "This makes sense, sending an HTTP Datagram for a stream that you're not yet allowed to create violates a MUST in a detectable way so we can recommend punishment. Though I doubt that we'd implement this check.",
+          "createdAt": "2021-10-21T00:44:07Z",
+          "updatedAt": "2021-10-21T00:44:07Z"
+        }
+      ]
+    },
+    {
+      "number": 107,
+      "id": "I_kwDODOpKfc49ge_x",
+      "title": "Capsule lengths",
+      "url": "https://github.com/ietf-wg-masque/draft-ietf-masque-h3-datagram/issues/107",
+      "state": "OPEN",
+      "author": "LPardue",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "The generic definition of Capsule includes the `Capsule Length` field that is the length of all remaining fields, which depends on the type. We state that the length can be zero.\r\n\r\nHowever, many of the capsule types we define cannot be zero-length:\r\n\r\n* REGISTER_DATAGRAM - at least 1 byte\r\n* REGISTER_DATAGRAM_CONTEXT - at least 2 bytes\r\n* Datagram Close - at least 2 bytes\r\n\r\nWe could be more prescriptive of these capsules. Such as explicitly marking the minimal length in the figures, or noting it in the prose. We might also recommend that receivers of these capsules reject capsules that are clearly too short",
+      "createdAt": "2021-10-21T00:04:12Z",
+      "updatedAt": "2021-10-21T00:46:31Z",
+      "closedAt": null,
+      "comments": [
+        {
+          "author": "DavidSchinazi",
+          "authorAssociation": "COLLABORATOR",
+          "body": "How about we do something similar to [this generic text about h3 frames](https://datatracker.ietf.org/doc/html/draft-ietf-quic-http#section-7.1):\r\n\r\n> Each frame's payload MUST contain exactly the fields identified in its description. A frame payload that contains additional bytes after the identified fields or a frame payload that terminates before the end of the identified fields MUST be treated as a connection error of type H3_FRAME_ERROR; see Section 8. In particular, redundant length encodings MUST be verified to be self-consistent; see Section 10.8.",
+          "createdAt": "2021-10-21T00:46:31Z",
+          "updatedAt": "2021-10-21T00:46:31Z"
+        }
+      ]
+    },
+    {
+      "number": 108,
+      "id": "I_kwDODOpKfc49ggIR",
+      "title": "Section 6.1 should be 5.1",
+      "url": "https://github.com/ietf-wg-masque/draft-ietf-masque-h3-datagram/issues/108",
+      "state": "CLOSED",
+      "author": "LPardue",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "Editorial whoops when the Sec-Use-Datagram-Contexts header was added",
+      "createdAt": "2021-10-21T00:14:22Z",
+      "updatedAt": "2021-10-21T00:48:29Z",
+      "closedAt": "2021-10-21T00:48:29Z",
+      "comments": []
+    },
+    {
+      "number": 109,
+      "id": "I_kwDODOpKfc49ghxu",
+      "title": "Commentary on \"sticking out\" is stale and possibly mislocated",
+      "url": "https://github.com/ietf-wg-masque/draft-ietf-masque-h3-datagram/issues/109",
+      "state": "OPEN",
+      "author": "LPardue",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "The doc has evolved from just HTTP/3 Datagram, to define Capsule protocol and HTTP datagrams over capsule.\r\n\r\nIn Security Considerations, we say\r\n\r\n> Since this feature requires sending an HTTP/3 Settings parameter, it \"sticks out\".\r\n\r\nIt's a little ambiguous what \"this feature\" on face value. Arguably, the recommendation to always send the setting could be done in the section that defines the setting. Some editorial work would address these concerns.",
+      "createdAt": "2021-10-21T00:28:54Z",
+      "updatedAt": "2021-10-21T00:49:34Z",
+      "closedAt": null,
+      "comments": [
+        {
+          "author": "DavidSchinazi",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Agreed",
+          "createdAt": "2021-10-21T00:49:34Z",
+          "updatedAt": "2021-10-21T00:49:34Z"
         }
       ]
     }
@@ -6379,21 +6469,21 @@
       "id": "MDExOlB1bGxSZXF1ZXN0Njk2MTgwMjIw",
       "title": "split the DATAGRAM capsule",
       "url": "https://github.com/ietf-wg-masque/draft-ietf-masque-h3-datagram/pull/82",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "LPardue",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
       "labels": [],
       "body": "Fixes #81.\r\n\r\nThis follows the explicit naming from REGISTER_CONTEXT and REGISTER_NO_CONTEXT but I've purposely defined both capsule types in the same section because the substantive considerations for both are mostly identical and I don't like duplication.\r\n\r\nPreviously we discussed the optionality of parsing the Context ID field. This change replaces that with requirements on endpoints to send the right datagram type, and reject the wrong datagram type, depending on the registration.",
       "createdAt": "2021-07-23T19:59:48Z",
-      "updatedAt": "2021-07-24T17:32:03Z",
+      "updatedAt": "2021-10-20T23:18:19Z",
       "baseRepository": "ietf-wg-masque/draft-ietf-masque-h3-datagram",
       "baseRefName": "main",
       "baseRefOid": "f239497fbdf99754b2354bb0b047812aefbe250c",
       "headRepository": "ietf-wg-masque/draft-ietf-masque-h3-datagram",
       "headRefName": "lucas/split-datagram-capsule",
       "headRefOid": "5832935289df025f44931a64e2ab85ebf6a4a48d",
-      "closedAt": null,
+      "closedAt": "2021-10-20T23:11:08Z",
       "mergedAt": null,
       "mergedBy": null,
       "mergeCommit": null,
@@ -6418,6 +6508,13 @@
           "body": "Ack",
           "createdAt": "2021-07-24T17:32:03Z",
           "updatedAt": "2021-07-24T17:32:03Z"
+        },
+        {
+          "author": "LPardue",
+          "authorAssociation": "COLLABORATOR",
+          "body": "I'm going to close this since it has been overtaken by other design changes like Capsule",
+          "createdAt": "2021-10-20T23:11:08Z",
+          "updatedAt": "2021-10-20T23:11:08Z"
         }
       ],
       "reviews": []
@@ -6978,7 +7075,7 @@
       "labels": [],
       "body": "fixes #92 \r\n\r\nerr'ing on the side of succinct ",
       "createdAt": "2021-10-04T23:37:52Z",
-      "updatedAt": "2021-10-05T11:26:07Z",
+      "updatedAt": "2021-10-20T23:17:44Z",
       "baseRepository": "ietf-wg-masque/draft-ietf-masque-h3-datagram",
       "baseRefName": "main",
       "baseRefOid": "c3f5b8bd96cb44da63bb66e7b2d95b7d6fb76220",
@@ -7020,7 +7117,7 @@
       "labels": [],
       "body": "\u2026king hte law\r\n\r\nAlso, switch to format to beatuiful superscript HTML rendering as used by RFC 9000.\r\n\r\nfixes #93 ",
       "createdAt": "2021-10-04T23:48:36Z",
-      "updatedAt": "2021-10-05T11:25:53Z",
+      "updatedAt": "2021-10-20T23:17:43Z",
       "baseRepository": "ietf-wg-masque/draft-ietf-masque-h3-datagram",
       "baseRefName": "main",
       "baseRefOid": "c3f5b8bd96cb44da63bb66e7b2d95b7d6fb76220",
@@ -7115,7 +7212,7 @@
       "labels": [],
       "body": "This borrows some of the spin off suggestions made during the discussion on #95. It does not address the issue itself. See that issue for next steps.",
       "createdAt": "2021-10-06T22:14:15Z",
-      "updatedAt": "2021-10-06T23:50:37Z",
+      "updatedAt": "2021-10-20T23:17:42Z",
       "baseRepository": "ietf-wg-masque/draft-ietf-masque-h3-datagram",
       "baseRefName": "main",
       "baseRefOid": "92a45bac93fee117a9acefb920a7c4c348d1b68a",
@@ -7184,7 +7281,7 @@
       "labels": [],
       "body": "fixes #96 ",
       "createdAt": "2021-10-06T22:43:02Z",
-      "updatedAt": "2021-10-06T23:51:46Z",
+      "updatedAt": "2021-10-20T23:17:40Z",
       "baseRepository": "ietf-wg-masque/draft-ietf-masque-h3-datagram",
       "baseRefName": "main",
       "baseRefOid": "92a45bac93fee117a9acefb920a7c4c348d1b68a",
@@ -7255,6 +7352,200 @@
           "comments": []
         }
       ]
+    },
+    {
+      "number": 105,
+      "id": "PR_kwDODOpKfc4tW8aO",
+      "title": "Make datagram contexts optional to implement",
+      "url": "https://github.com/ietf-wg-masque/draft-ietf-masque-h3-datagram/pull/105",
+      "state": "MERGED",
+      "author": "DavidSchinazi",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "[WebTransport](https://datatracker.ietf.org/doc/html/draft-ietf-webtrans-http3) uses HTTP Datagrams but doesn't currently have a need for datagram contexts. Because of this, some members of the WebTransport community prefer to not have to implement datagram contexts. This PR changes how datagram contexts are negotiated to make them optional to implement. One important design goal of this change was to allow optimistic use of contexts: in other words, the client shouldn't have to wait a round trip to find out whether contexts are supported before being able to optimistically use them.\r\n\r\nBefore this PR, contexts were mandatory to implement and the client would decide whether to use them by sending either REGISTER_DATAGRAM_CONTEXT or REGISTER_DATAGRAM_NO_CONTEXT.\r\n\r\nWith this PR, endpoints use a new Sec-Use-Datagram-Contexts header to indicate support. The PR makes a few small tweaks to capsules in order to allow the optimistic use described above. In particular, it incorporates the DATAGRAM capsule split from #82 as that allows the client to use contexts before knowing whether the server supports them because the server can just drop the variant of the capsule with contexts.\r\n\r\n[Rendered view of this PR here](https://ietf-wg-masque.github.io/draft-ietf-masque-h3-datagram/context_impl_optional/draft-ietf-masque-h3-datagram.html).",
+      "createdAt": "2021-10-19T01:42:38Z",
+      "updatedAt": "2021-10-20T23:17:10Z",
+      "baseRepository": "ietf-wg-masque/draft-ietf-masque-h3-datagram",
+      "baseRefName": "main",
+      "baseRefOid": "8d79e92675291ac1ea2cb50a43e296bb35b299fa",
+      "headRepository": "ietf-wg-masque/draft-ietf-masque-h3-datagram",
+      "headRefName": "context_impl_optional",
+      "headRefOid": "675c932e786146ef3d57651aa3ee1b67dff1d3d5",
+      "closedAt": "2021-10-20T23:17:08Z",
+      "mergedAt": "2021-10-20T23:17:07Z",
+      "mergedBy": "DavidSchinazi",
+      "mergeCommit": {
+        "oid": "c80be7810297082ca9edb18261da107b4ac2a32c"
+      },
+      "comments": [
+        {
+          "author": "LPardue",
+          "authorAssociation": "COLLABORATOR",
+          "body": "> In particular, it incorporates the DATAGRAM capsule split from #82 as that allows the client to use contexts before knowing whether the server supports them because the server can just drop the variant of the capsule with contexts.\r\n\r\nI've held my finger over the \"close PR\" button a few times on that one :face_with_spiral_eyes: ",
+          "createdAt": "2021-10-19T01:45:10Z",
+          "updatedAt": "2021-10-19T01:45:10Z"
+        }
+      ],
+      "reviews": [
+        {
+          "id": "PRR_kwDODOpKfc4uuU53",
+          "commit": {
+            "abbreviatedOid": "6700c11"
+          },
+          "author": "LPardue",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "a few nits and minor comments",
+          "createdAt": "2021-10-20T00:28:31Z",
+          "updatedAt": "2021-10-20T02:58:16Z",
+          "comments": [
+            {
+              "originalPosition": 80,
+              "body": "```suggestion\r\nImplementations of HTTP Datagrams that support datagram contexts MUST provide\r\n```",
+              "createdAt": "2021-10-20T00:28:31Z",
+              "updatedAt": "2021-10-20T02:58:16Z"
+            },
+            {
+              "originalPosition": 103,
+              "body": "Not sure what you mean here, since there's an error in identifying one type. There's QUIC DATAGRAM frame, HTTP/3 Datagrams and HTTP/3 DATA frames.",
+              "createdAt": "2021-10-20T00:31:21Z",
+              "updatedAt": "2021-10-20T02:58:16Z"
+            },
+            {
+              "originalPosition": 150,
+              "body": "The logical ordering switches part way through the first sentence, which is hard when being introduced to the concepts. So how about something like\r\n\r\n```suggestion\r\nThis document defines the the REGISTER_DATAGRAM and REGISTER_DATAGRAM_CONTEXT\r\ncapsules types (see {{iana-types}}), known collectively as the datagram\r\nregistration capsules. The REGISTER_DATAGRAM capsule is used by endpoints to\r\ninform their peer of the encoding and semantics of all datagrams associated with\r\na stream. The REGISTER_DATAGRAM_CONTEXT capsule is used by endpoints to inform\r\ntheir peer of the encoding and semantics of all datagrams associated with a\r\ngiven context ID, or with all datagrams if context ID.\r\n```",
+              "createdAt": "2021-10-20T00:42:15Z",
+              "updatedAt": "2021-10-20T02:58:16Z"
+            },
+            {
+              "originalPosition": 538,
+              "body": "```suggestion\r\nIn these examples, the client supports a CONNECT-UDP Timestamp Extension, which\r\n```",
+              "createdAt": "2021-10-20T00:54:12Z",
+              "updatedAt": "2021-10-20T02:58:17Z"
+            },
+            {
+              "originalPosition": 539,
+              "body": "```suggestion\r\nuses a different Datagram Format Type that carries a timestamp followed by the\r\n```",
+              "createdAt": "2021-10-20T00:54:34Z",
+              "updatedAt": "2021-10-20T02:58:17Z"
+            },
+            {
+              "originalPosition": 539,
+              "body": "```suggestion\r\nuses a different Datagram Format Type that carries a timestamp followed by the\r\n```",
+              "createdAt": "2021-10-20T00:54:42Z",
+              "updatedAt": "2021-10-20T02:58:17Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDODOpKfc4uyBBd",
+          "commit": {
+            "abbreviatedOid": "6700c11"
+          },
+          "author": "DavidSchinazi",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2021-10-20T18:36:47Z",
+          "updatedAt": "2021-10-20T18:42:31Z",
+          "comments": [
+            {
+              "originalPosition": 103,
+              "body": "I'm not sure I understand what you mean, can you elaborate?",
+              "createdAt": "2021-10-20T18:36:47Z",
+              "updatedAt": "2021-10-20T18:42:31Z"
+            },
+            {
+              "originalPosition": 150,
+              "body": "Applied a variation on this text",
+              "createdAt": "2021-10-20T18:42:03Z",
+              "updatedAt": "2021-10-20T18:42:31Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDODOpKfc4uyH3Y",
+          "commit": {
+            "abbreviatedOid": "c1b074c"
+          },
+          "author": "LPardue",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2021-10-20T19:07:13Z",
+          "updatedAt": "2021-10-20T19:07:13Z",
+          "comments": [
+            {
+              "originalPosition": 103,
+              "body": "You say \r\n\r\n> If this QUIC DATAGRAM frame arrives before the QUIC DATA frame\r\n\r\nbut there is no such thing as a QUIC DATA frame",
+              "createdAt": "2021-10-20T19:07:13Z",
+              "updatedAt": "2021-10-20T19:07:13Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDODOpKfc4uytGT",
+          "commit": {
+            "abbreviatedOid": "675c932"
+          },
+          "author": "DavidSchinazi",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2021-10-20T22:13:28Z",
+          "updatedAt": "2021-10-20T22:13:28Z",
+          "comments": [
+            {
+              "originalPosition": 103,
+              "body": "Ah, right :) I've reworded this to refer to the concept instead of the frame that carries it",
+              "createdAt": "2021-10-20T22:13:28Z",
+              "updatedAt": "2021-10-20T22:13:28Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDODOpKfc4uy0Q4",
+          "commit": {
+            "abbreviatedOid": "675c932"
+          },
+          "author": "LPardue",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "LGTM now, thanks!",
+          "createdAt": "2021-10-20T23:08:50Z",
+          "updatedAt": "2021-10-20T23:08:50Z",
+          "comments": []
+        }
+      ]
+    },
+    {
+      "number": 110,
+      "id": "PR_kwDODOpKfc4td5QJ",
+      "title": "Whoops, of an editorial nature",
+      "url": "https://github.com/ietf-wg-masque/draft-ietf-masque-h3-datagram/pull/110",
+      "state": "MERGED",
+      "author": "DavidSchinazi",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "Fixes #108",
+      "createdAt": "2021-10-21T00:48:23Z",
+      "updatedAt": "2021-10-21T00:48:32Z",
+      "baseRepository": "ietf-wg-masque/draft-ietf-masque-h3-datagram",
+      "baseRefName": "main",
+      "baseRefOid": "c80be7810297082ca9edb18261da107b4ac2a32c",
+      "headRepository": "ietf-wg-masque/draft-ietf-masque-h3-datagram",
+      "headRefName": "whoops",
+      "headRefOid": "d05de324aad42355c81695fd6811033a6e80bc4a",
+      "closedAt": "2021-10-21T00:48:29Z",
+      "mergedAt": "2021-10-21T00:48:29Z",
+      "mergedBy": "DavidSchinazi",
+      "mergeCommit": {
+        "oid": "57378112966888943cb02079a6a00235d9d12333"
+      },
+      "comments": [],
+      "reviews": []
     }
   ]
 }
