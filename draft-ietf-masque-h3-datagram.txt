@@ -5,8 +5,8 @@
 MASQUE                                                       D. Schinazi
 Internet-Draft                                                Google LLC
 Intended status: Standards Track                               L. Pardue
-Expires: 23 April 2022                                        Cloudflare
-                                                         20 October 2021
+Expires: 24 April 2022                                        Cloudflare
+                                                         21 October 2021
 
 
                        Using Datagrams with HTTP
@@ -51,7 +51,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 23 April 2022.
+   This Internet-Draft will expire on 24 April 2022.
 
 Copyright Notice
 
@@ -85,8 +85,8 @@ Table of Contents
        4.4.2.  The Datagram Close Capsule
        4.4.3.  The Datagram Capsules
    5.  The H3_DATAGRAM HTTP/3 SETTINGS Parameter
+     5.1.  Note About Draft Versions
    6.  The Sec-Use-Datagram-Contexts HTTP Header
-     6.1.  Note About Draft Versions
    7.  Prioritization
    8.  Security Considerations
    9.  IANA Considerations
@@ -670,6 +670,21 @@ Table of Contents
    the connection with error H3_SETTINGS_ERROR.  In all cases, the
    maximum permitted value of the H3_DATAGRAM SETTINGS parameter is 1.
 
+5.1.  Note About Draft Versions
+
+   [[RFC editor: please remove this section before publication.]]
+
+   Some revisions of this draft specification use a different value (the
+   Identifier field of a Setting in the HTTP/3 SETTINGS frame) for the
+   H3_DATAGRAM Settings Parameter.  This allows new draft revisions to
+   make incompatible changes.  Multiple draft versions MAY be supported
+   by either endpoint in a connection.  Such endpoints MUST send
+   multiple values for H3_DATAGRAM.  Once an endpoint has sent and
+   received SETTINGS, it MUST compute the intersection of the values it
+   has sent and received, and then it MUST select and use the most
+   recent draft version from the intersection set.  This ensures that
+   both endpoints negotiate the same draft version.
+
 6.  The Sec-Use-Datagram-Contexts HTTP Header
 
    Endpoints indicate their support for datagram contexts by sending the
@@ -737,21 +752,6 @@ Table of Contents
    Extensions MAY define a different mechanism to communicate whether
    contexts are in use, and they MAY do so in a way which is opaque to
    intermediaries.
-
-6.1.  Note About Draft Versions
-
-   [[RFC editor: please remove this section before publication.]]
-
-   Some revisions of this draft specification use a different value (the
-   Identifier field of a Setting in the HTTP/3 SETTINGS frame) for the
-   H3_DATAGRAM Settings Parameter.  This allows new draft revisions to
-   make incompatible changes.  Multiple draft versions MAY be supported
-   by either endpoint in a connection.  Such endpoints MUST send
-   multiple values for H3_DATAGRAM.  Once an endpoint has sent and
-   received SETTINGS, it MUST compute the intersection of the values it
-   has sent and received, and then it MUST select and use the most
-   recent draft version from the intersection set.  This ensures that
-   both endpoints negotiate the same draft version.
 
 7.  Prioritization
 
