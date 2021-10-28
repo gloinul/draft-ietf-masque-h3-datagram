@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2021-10-21T01:14:38.969197+00:00",
+  "timestamp": "2021-10-28T01:04:12.940888+00:00",
   "repo": "ietf-wg-masque/draft-ietf-masque-h3-datagram",
   "labels": [
     {
@@ -2546,6 +2546,22 @@
           "updatedAt": "2021-10-21T00:49:34Z"
         }
       ]
+    },
+    {
+      "number": 111,
+      "id": "I_kwDODOpKfc493HUZ",
+      "title": "RELIABLE_DATAGRAM",
+      "url": "https://github.com/ietf-wg-masque/draft-ietf-masque-h3-datagram/issues/111",
+      "state": "OPEN",
+      "author": "bemasc",
+      "authorAssociation": "NONE",
+      "assignees": [],
+      "labels": [],
+      "body": "We should revisit [the RELIABLE_DATAGRAM question](https://mailarchive.ietf.org/arch/msg/masque/JImas3YR45txq60pZR2Ab-_LxzQ/).",
+      "createdAt": "2021-10-27T21:00:34Z",
+      "updatedAt": "2021-10-27T21:00:34Z",
+      "closedAt": null,
+      "comments": []
     }
   ],
   "pulls": [
