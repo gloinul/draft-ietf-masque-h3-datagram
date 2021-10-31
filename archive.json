@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2021-10-28T01:04:12.940888+00:00",
+  "timestamp": "2021-10-31T01:07:17.481718+00:00",
   "repo": "ietf-wg-masque/draft-ietf-masque-h3-datagram",
   "labels": [
     {
@@ -2495,7 +2495,7 @@
       "labels": [],
       "body": "The generic definition of Capsule includes the `Capsule Length` field that is the length of all remaining fields, which depends on the type. We state that the length can be zero.\r\n\r\nHowever, many of the capsule types we define cannot be zero-length:\r\n\r\n* REGISTER_DATAGRAM - at least 1 byte\r\n* REGISTER_DATAGRAM_CONTEXT - at least 2 bytes\r\n* Datagram Close - at least 2 bytes\r\n\r\nWe could be more prescriptive of these capsules. Such as explicitly marking the minimal length in the figures, or noting it in the prose. We might also recommend that receivers of these capsules reject capsules that are clearly too short",
       "createdAt": "2021-10-21T00:04:12Z",
-      "updatedAt": "2021-10-21T00:46:31Z",
+      "updatedAt": "2021-10-30T15:59:49Z",
       "closedAt": null,
       "comments": [
         {
@@ -2504,6 +2504,13 @@
           "body": "How about we do something similar to [this generic text about h3 frames](https://datatracker.ietf.org/doc/html/draft-ietf-quic-http#section-7.1):\r\n\r\n> Each frame's payload MUST contain exactly the fields identified in its description. A frame payload that contains additional bytes after the identified fields or a frame payload that terminates before the end of the identified fields MUST be treated as a connection error of type H3_FRAME_ERROR; see Section 8. In particular, redundant length encodings MUST be verified to be self-consistent; see Section 10.8.",
           "createdAt": "2021-10-21T00:46:31Z",
           "updatedAt": "2021-10-21T00:46:31Z"
+        },
+        {
+          "author": "afrind",
+          "authorAssociation": "NONE",
+          "body": "Is it also a connection error / FRAME_ERROR if the stream containing capsules ends in the middle of a capsule?",
+          "createdAt": "2021-10-30T15:59:49Z",
+          "updatedAt": "2021-10-30T15:59:49Z"
         }
       ]
     },
