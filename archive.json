@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2021-10-31T01:07:17.481718+00:00",
+  "timestamp": "2021-11-02T01:07:33.863830+00:00",
   "repo": "ietf-wg-masque/draft-ietf-masque-h3-datagram",
   "labels": [
     {
@@ -2495,7 +2495,7 @@
       "labels": [],
       "body": "The generic definition of Capsule includes the `Capsule Length` field that is the length of all remaining fields, which depends on the type. We state that the length can be zero.\r\n\r\nHowever, many of the capsule types we define cannot be zero-length:\r\n\r\n* REGISTER_DATAGRAM - at least 1 byte\r\n* REGISTER_DATAGRAM_CONTEXT - at least 2 bytes\r\n* Datagram Close - at least 2 bytes\r\n\r\nWe could be more prescriptive of these capsules. Such as explicitly marking the minimal length in the figures, or noting it in the prose. We might also recommend that receivers of these capsules reject capsules that are clearly too short",
       "createdAt": "2021-10-21T00:04:12Z",
-      "updatedAt": "2021-10-30T15:59:49Z",
+      "updatedAt": "2021-11-01T18:34:28Z",
       "closedAt": null,
       "comments": [
         {
@@ -2511,6 +2511,34 @@
           "body": "Is it also a connection error / FRAME_ERROR if the stream containing capsules ends in the middle of a capsule?",
           "createdAt": "2021-10-30T15:59:49Z",
           "updatedAt": "2021-10-30T15:59:49Z"
+        },
+        {
+          "author": "DavidSchinazi",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Capsules are end-to-end so if the stream is aborted mid-capsule by an endpoint, there's not much an intermediary can do, and it shouldn't impact other streams on the same connection. Our implementation will reset a stream if it receives a FIN mid-capsule.",
+          "createdAt": "2021-11-01T17:30:33Z",
+          "updatedAt": "2021-11-01T17:30:33Z"
+        },
+        {
+          "author": "LPardue",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Since capsules are above the layer of H2 and H3, closing a connection seems quite extreme.\r\n\r\nI would treat these a bit like truncated HTTP content. Terminating the data stream seems like a decent recommendation, ",
+          "createdAt": "2021-11-01T17:47:20Z",
+          "updatedAt": "2021-11-01T17:47:20Z"
+        },
+        {
+          "author": "afrind",
+          "authorAssociation": "NONE",
+          "body": "> Capsules are end-to-end so if the stream is aborted mid-capsule by an endpoint, there's not much an intermediary can do, and it shouldn't impact other streams on the same connection. \r\n\r\nIf an endpoint aborts a stream mid-capsule, it should do so with a RST and not a FIN, right? The text in H3 (right below your linked text) talks about truncation on graceful completion.\r\n\r\nAlso, is the recommendation from the original issue (malformed frames) also be a stream or a connection error?  It seems like we should be applying the same logic to the two cases, right?",
+          "createdAt": "2021-11-01T18:18:43Z",
+          "updatedAt": "2021-11-01T18:18:43Z"
+        },
+        {
+          "author": "LPardue",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Capsules aren't frames. We should expect some implementations to allow applications to inject their own capsules, just like application can insert HTTP content today. There might be valid reasons to terminate a stream, such as the user losing interest in a tunnelled connection, an implementation that is taking opaque application data and sending it has no way to ensure it doesn't send a truncated capsule.\r\n\r\nFor these reasons, I think recommending a connection closure is too extreme (endpoints can always do that if they really want to). Recommending a stream closure, with possibly a new error code, seems right.",
+          "createdAt": "2021-11-01T18:34:27Z",
+          "updatedAt": "2021-11-01T18:34:27Z"
         }
       ]
     },
@@ -7569,6 +7597,333 @@
       },
       "comments": [],
       "reviews": []
+    },
+    {
+      "number": 112,
+      "id": "PR_kwDODOpKfc4t8Sp6",
+      "title": "Treat malformed capsules as stream errors",
+      "url": "https://github.com/ietf-wg-masque/draft-ietf-masque-h3-datagram/pull/112",
+      "state": "OPEN",
+      "author": "afrind",
+      "authorAssociation": "NONE",
+      "assignees": [],
+      "labels": [],
+      "body": "Borrowing text from H3.  Also I don't think there is a 'FRAME_ENCODING_ERROR' defined anywhere.",
+      "createdAt": "2021-11-01T18:34:10Z",
+      "updatedAt": "2021-11-02T00:37:34Z",
+      "baseRepository": "ietf-wg-masque/draft-ietf-masque-h3-datagram",
+      "baseRefName": "main",
+      "baseRefOid": "a8ae65dc2eda7f27a0ef43d39d8dbcb046ae5adb",
+      "headRepository": "afrind/draft-ietf-masque-h3-datagram",
+      "headRefName": "malformed-capsules",
+      "headRefOid": "58410675e0bd01c572e74fd7ff84e7243eb94802",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [],
+      "reviews": [
+        {
+          "id": "PRR_kwDODOpKfc4vW5UO",
+          "commit": {
+            "abbreviatedOid": "b746e2c"
+          },
+          "author": "LPardue",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2021-11-01T18:40:48Z",
+          "updatedAt": "2021-11-01T18:40:49Z",
+          "comments": [
+            {
+              "originalPosition": 5,
+              "body": "This is a funny one.\r\n\r\nHTTP/3 Datagram is not an HTTP/3 frame, so reporting this error code feels odd. \r\n\r\nI think it was me that picked FRAME_ENCODING_ERROR, which is defined in transport\r\n\r\n> FRAME_ENCODING_ERROR (0x07):  An endpoint received a frame that was\r\n      badly formatted -- for instance, a frame of an unknown type or an\r\n      ACK frame that has more acknowledgment ranges than the remainder\r\n      of the packet could carry.\r\n\r\nBut really, this is not a problem in the transport layer, and that also feels wrong now I think about it. I think the answer is a new application-layer `H3_DATAGRAM_ERROR`.",
+              "createdAt": "2021-11-01T18:40:49Z",
+              "updatedAt": "2021-11-01T18:40:49Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDODOpKfc4vW6TH",
+          "commit": {
+            "abbreviatedOid": "b746e2c"
+          },
+          "author": "LPardue",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2021-11-01T18:45:27Z",
+          "updatedAt": "2021-11-01T18:45:27Z",
+          "comments": [
+            {
+              "originalPosition": 17,
+              "body": "```suggestion\r\nidentified fields or a capsule payload that terminates before the end of the\r\n```",
+              "createdAt": "2021-11-01T18:45:27Z",
+              "updatedAt": "2021-11-01T18:45:27Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDODOpKfc4vW6WR",
+          "commit": {
+            "abbreviatedOid": "b746e2c"
+          },
+          "author": "afrind",
+          "authorAssociation": "NONE",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2021-11-01T18:45:40Z",
+          "updatedAt": "2021-11-01T18:45:40Z",
+          "comments": [
+            {
+              "originalPosition": 5,
+              "body": "I totally agree that borrowing error codes from lower level protocols is weird.  \r\n\r\nH3_DATAGRAM_ERROR works when processing HTTP/3 DATAGRAMs.  But the capsule length errors don't fit with that.  Does Capsule Protocol needs its own error code range too (it can be conveyed over non-H3)?",
+              "createdAt": "2021-11-01T18:45:40Z",
+              "updatedAt": "2021-11-01T18:45:40Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDODOpKfc4vW6ZK",
+          "commit": {
+            "abbreviatedOid": "b746e2c"
+          },
+          "author": "LPardue",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2021-11-01T18:45:51Z",
+          "updatedAt": "2021-11-01T18:45:51Z",
+          "comments": [
+            {
+              "originalPosition": 18,
+              "body": "as I said on the issue, this isn't an HTTP/3 frame error. Furthermore, we need to cover error handling for all HTTP versions; in H2 and H3 that's a stream error, in HTTP/1.1 it means tearing down the whole thing (which I think is acceptable because there is no way to recover the data stream) at this point.",
+              "createdAt": "2021-11-01T18:45:51Z",
+              "updatedAt": "2021-11-01T18:45:51Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDODOpKfc4vW6pJ",
+          "commit": {
+            "abbreviatedOid": "e6ecc9b"
+          },
+          "author": "LPardue",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2021-11-01T18:47:04Z",
+          "updatedAt": "2021-11-01T18:47:04Z",
+          "comments": [
+            {
+              "originalPosition": 5,
+              "body": "I agree these are two different types of error",
+              "createdAt": "2021-11-01T18:47:04Z",
+              "updatedAt": "2021-11-01T18:47:04Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDODOpKfc4vXITG",
+          "commit": {
+            "abbreviatedOid": "5841067"
+          },
+          "author": "DavidSchinazi",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2021-11-01T19:55:29Z",
+          "updatedAt": "2021-11-01T19:55:29Z",
+          "comments": [
+            {
+              "originalPosition": 5,
+              "body": "Can we define a new DATAGRAM_ERROR? That'll be more helpful than TBD",
+              "createdAt": "2021-11-01T19:55:29Z",
+              "updatedAt": "2021-11-01T19:55:57Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDODOpKfc4vXIcb",
+          "commit": {
+            "abbreviatedOid": "5841067"
+          },
+          "author": "DavidSchinazi",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2021-11-01T19:56:11Z",
+          "updatedAt": "2021-11-01T19:56:11Z",
+          "comments": [
+            {
+              "originalPosition": 23,
+              "body": "Can we define a new CAPSULE_ERROR? That'll be more helpful than TBD",
+              "createdAt": "2021-11-01T19:56:11Z",
+              "updatedAt": "2021-11-01T19:56:11Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDODOpKfc4vXLTC",
+          "commit": {
+            "abbreviatedOid": "5841067"
+          },
+          "author": "afrind",
+          "authorAssociation": "NONE",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2021-11-01T20:10:14Z",
+          "updatedAt": "2021-11-01T20:10:14Z",
+          "comments": [
+            {
+              "originalPosition": 23,
+              "body": "I thought about doing that here, but it seemed to violate the thesis.  You want it in this PR?",
+              "createdAt": "2021-11-01T20:10:14Z",
+              "updatedAt": "2021-11-01T20:10:14Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDODOpKfc4vX1nN",
+          "commit": {
+            "abbreviatedOid": "5841067"
+          },
+          "author": "DavidSchinazi",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2021-11-02T00:16:10Z",
+          "updatedAt": "2021-11-02T00:16:10Z",
+          "comments": [
+            {
+              "originalPosition": 23,
+              "body": "What do you mean by \"violate the thesis\"? This is a stream error and not a connection error right?",
+              "createdAt": "2021-11-02T00:16:10Z",
+              "updatedAt": "2021-11-02T00:16:10Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDODOpKfc4vX2OZ",
+          "commit": {
+            "abbreviatedOid": "5841067"
+          },
+          "author": "afrind",
+          "authorAssociation": "NONE",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2021-11-02T00:23:29Z",
+          "updatedAt": "2021-11-02T00:23:30Z",
+          "comments": [
+            {
+              "originalPosition": 23,
+              "body": "Sorry, I meant \"the thesis of this PR\", which is about how to handle malformed capsules, not creating a new application error code space for capsule protocol.",
+              "createdAt": "2021-11-02T00:23:29Z",
+              "updatedAt": "2021-11-02T00:23:30Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDODOpKfc4vX2Za",
+          "commit": {
+            "abbreviatedOid": "5841067"
+          },
+          "author": "DavidSchinazi",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2021-11-02T00:25:35Z",
+          "updatedAt": "2021-11-02T00:25:35Z",
+          "comments": [
+            {
+              "originalPosition": 23,
+              "body": "I didn't mean creating a new application error code space, just add a new value to the h3 errors registry",
+              "createdAt": "2021-11-02T00:25:35Z",
+              "updatedAt": "2021-11-02T00:25:35Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDODOpKfc4vX2hw",
+          "commit": {
+            "abbreviatedOid": "5841067"
+          },
+          "author": "afrind",
+          "authorAssociation": "NONE",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2021-11-02T00:27:01Z",
+          "updatedAt": "2021-11-02T00:27:01Z",
+          "comments": [
+            {
+              "originalPosition": 23,
+              "body": "I don't think Capsule Protocol errors belong in the H3 space, since Capsule Protocol can be conveyed over other versions of HTTP, right?",
+              "createdAt": "2021-11-02T00:27:01Z",
+              "updatedAt": "2021-11-02T00:27:01Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDODOpKfc4vX26H",
+          "commit": {
+            "abbreviatedOid": "5841067"
+          },
+          "author": "DavidSchinazi",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2021-11-02T00:31:27Z",
+          "updatedAt": "2021-11-02T00:31:27Z",
+          "comments": [
+            {
+              "originalPosition": 23,
+              "body": "Capsules travel end-to-end, but HTTP aborts are hop-by-hop. Since we don't have a way to abort end-to-end, we're stuck with using an error from the corresponding HTTP version in use. But you're right, you'd need to allocate one for h2 as well, and mention that the stream abort mechanism in h1 is TCP RST.",
+              "createdAt": "2021-11-02T00:31:27Z",
+              "updatedAt": "2021-11-02T00:31:27Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDODOpKfc4vX3JH",
+          "commit": {
+            "abbreviatedOid": "5841067"
+          },
+          "author": "afrind",
+          "authorAssociation": "NONE",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2021-11-02T00:34:04Z",
+          "updatedAt": "2021-11-02T00:34:04Z",
+          "comments": [
+            {
+              "originalPosition": 23,
+              "body": "> and mention that the stream abort mechanism in h1 is TCP RST.\r\n\r\nIs this text sufficient?\r\n\r\n>  When running over HTTP/1.1, the receiver terminates the underlying connection with an error.\r\n\r\nI tried to use the language from core.",
+              "createdAt": "2021-11-02T00:34:04Z",
+              "updatedAt": "2021-11-02T00:34:04Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDODOpKfc4vX3dO",
+          "commit": {
+            "abbreviatedOid": "5841067"
+          },
+          "author": "DavidSchinazi",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2021-11-02T00:37:33Z",
+          "updatedAt": "2021-11-02T00:37:34Z",
+          "comments": [
+            {
+              "originalPosition": 23,
+              "body": "SGTM. I just rather we either not specify the h3/h2 errors, or define them with a specific value as opposed to TBD.",
+              "createdAt": "2021-11-02T00:37:33Z",
+              "updatedAt": "2021-11-02T00:37:34Z"
+            }
+          ]
+        }
+      ]
     }
   ]
 }
