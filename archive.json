@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2021-11-02T01:07:33.863830+00:00",
+  "timestamp": "2021-11-04T01:04:47.215705+00:00",
   "repo": "ietf-wg-masque/draft-ietf-masque-h3-datagram",
   "labels": [
     {
@@ -7610,13 +7610,13 @@
       "labels": [],
       "body": "Borrowing text from H3.  Also I don't think there is a 'FRAME_ENCODING_ERROR' defined anywhere.",
       "createdAt": "2021-11-01T18:34:10Z",
-      "updatedAt": "2021-11-02T00:37:34Z",
+      "updatedAt": "2021-11-02T23:01:59Z",
       "baseRepository": "ietf-wg-masque/draft-ietf-masque-h3-datagram",
       "baseRefName": "main",
       "baseRefOid": "a8ae65dc2eda7f27a0ef43d39d8dbcb046ae5adb",
       "headRepository": "afrind/draft-ietf-masque-h3-datagram",
       "headRefName": "malformed-capsules",
-      "headRefOid": "58410675e0bd01c572e74fd7ff84e7243eb94802",
+      "headRefOid": "fc0621657e1315798c97aa0ab16b7cad984d5e7a",
       "closedAt": null,
       "mergedAt": null,
       "mergedBy": null,
@@ -7920,6 +7920,52 @@
               "body": "SGTM. I just rather we either not specify the h3/h2 errors, or define them with a specific value as opposed to TBD.",
               "createdAt": "2021-11-02T00:37:33Z",
               "updatedAt": "2021-11-02T00:37:34Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDODOpKfc4vbMlH",
+          "commit": {
+            "abbreviatedOid": "5841067"
+          },
+          "author": "LPardue",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2021-11-02T16:34:25Z",
+          "updatedAt": "2021-11-02T16:34:25Z",
+          "comments": [
+            {
+              "originalPosition": 23,
+              "body": "It isn't a problem to use H2/H3 error codes to communicate application (higher-layer) problems. I think it is useful to include the reason (bad capsule) but I could live with `H3_GENERAL_PROTOCOL_ERROR` or the H2 equivalent. \r\n\r\nIf we consider a setup where there is an H3 -> H1.1 intermediary, the server behind the intermediary might detect a bad capsule and do a TCP RST. The intermediary can't know the reason for that and would probably end up having to use H3_GENERAL_PROTOCOL_ERROR. So the client might have to handle such a scenario anyway. ",
+              "createdAt": "2021-11-02T16:34:25Z",
+              "updatedAt": "2021-11-02T16:34:25Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDODOpKfc4vcbxJ",
+          "commit": {
+            "abbreviatedOid": "a5c740d"
+          },
+          "author": "DavidSchinazi",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "Thanks! Approved pending some minor tweaks",
+          "createdAt": "2021-11-02T22:50:55Z",
+          "updatedAt": "2021-11-02T22:52:00Z",
+          "comments": [
+            {
+              "originalPosition": 5,
+              "body": "I think we'll also want to use H3_DATAGRAM_ERROR to replace any use of H3_GENERAL_PROTOCOL_ERROR in this section",
+              "createdAt": "2021-11-02T22:50:55Z",
+              "updatedAt": "2021-11-02T22:52:00Z"
+            },
+            {
+              "originalPosition": 22,
+              "body": "nit: line wrap",
+              "createdAt": "2021-11-02T22:51:31Z",
+              "updatedAt": "2021-11-02T22:52:00Z"
             }
           ]
         }
