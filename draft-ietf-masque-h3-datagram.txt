@@ -100,7 +100,7 @@ Table of Contents
      10.2.  Informative References
    Appendix A.  Examples
      A.1.  CONNECT-UDP
-     A.2.  CONNECT-UDP with Delayed Timestamp Extension
+     A.2.  CONNECT-UDP with Timestamp Extension
        A.2.1.  With Delay
        A.2.2.  Successful Optimistic
        A.2.3.  Optimistic but Unsupported
@@ -1002,7 +1002,7 @@ A.1.  CONNECT-UDP
                            Quarter Stream ID = 11
                            Payload = Encapsulated UDP Payload
 
-A.2.  CONNECT-UDP with Delayed Timestamp Extension
+A.2.  CONNECT-UDP with Timestamp Extension
 
    In these examples, the client supports a CONNECT-UDP Timestamp
    Extension, which uses a different Datagram Format Type that carries a
