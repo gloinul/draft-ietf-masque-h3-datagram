@@ -1717,9 +1717,9 @@ DPLPMTUD.<a href="#section-4.4-7" class="pilcrow">¶</a></p>
         <h3 id="name-registering-datagram-contex">
 <a href="#section-4.5" class="section-number selfRef">4.5. </a><a href="#name-registering-datagram-contex" class="section-name selfRef">Registering Datagram Contexts with Capsules</a>
         </h3>
-<p id="section-4.5-1">Methods or protocols that support multiple datagram payload formats or
-separate types of datagrams can differentiate them using datagram contexts
-(<a href="#datagram-contexts" class="xref">Section 2.1</a>).<a href="#section-4.5-1" class="pilcrow">¶</a></p>
+<p id="section-4.5-1">HTTP Methods or protocols enabled by HTTP Upgrade Tokens that support
+multiple datagram payload formats or separate types of datagrams can
+differentiate them using datagram contexts (<a href="#datagram-contexts" class="xref">Section 2.1</a>).<a href="#section-4.5-1" class="pilcrow">¶</a></p>
 <p id="section-4.5-2">Such protocols can define a new Capsule type that is used to register
 a context ID with the peer endpoint.<a href="#section-4.5-2" class="pilcrow">¶</a></p>
 <p id="section-4.5-3">For example, if a new method needed to define a non-default context for
@@ -1843,7 +1843,7 @@ HTTP/3 datagrams enabled on this endpoint.<a href="#section-7-1" class="pilcrow"
           <tbody>
             <tr>
               <td class="text-left" rowspan="1" colspan="1">H3_DATAGRAM</td>
-              <td class="text-left" rowspan="1" colspan="1">0xffd277</td>
+              <td class="text-left" rowspan="1" colspan="1">0xffd278</td>
               <td class="text-left" rowspan="1" colspan="1">This Document</td>
               <td class="text-left" rowspan="1" colspan="1">0</td>
             </tr>
@@ -1941,13 +1941,13 @@ empty.<a href="#section-8.3-2.6.1" class="pilcrow">¶</a></p>
           </thead>
           <tbody>
             <tr>
-              <td class="text-left" rowspan="1" colspan="1">DATAGRAM</td>
-              <td class="text-left" rowspan="1" colspan="1">0xff37a1</td>
+              <td class="text-left" rowspan="1" colspan="1">DATAGRAM_WITH_CONTEXT</td>
+              <td class="text-left" rowspan="1" colspan="1">0xff37a4</td>
               <td class="text-left" rowspan="1" colspan="1">This Document</td>
             </tr>
             <tr>
-              <td class="text-left" rowspan="1" colspan="1">DATAGRAM_WITH_CONTEXT</td>
-              <td class="text-left" rowspan="1" colspan="1">0xff37a2</td>
+              <td class="text-left" rowspan="1" colspan="1">DATAGRAM</td>
+              <td class="text-left" rowspan="1" colspan="1">0xff37a5</td>
               <td class="text-left" rowspan="1" colspan="1">This Document</td>
             </tr>
           </tbody>
@@ -2063,7 +2063,7 @@ uses a different Datagram Format Type that carries a timestamp followed by the
 encapsulated UDP payload. Datagrams on the default context (0) are expected to
 contain UDP payloads, while contexts established with the
 REGISTER_UDP_WITH_TIMESTAMP_CONTEXT capsule include a timestamp along with the
-UDP payload. A new header, Sec-UDP-Timestamps, indicates support for the
+UDP payload. A new header, Sec-Use-UDP-Timestamps, indicates support for the
 extension.<a href="#appendix-A.2-1" class="pilcrow">¶</a></p>
 <div id="extension-supported">
 <section id="appendix-A.2.1">
@@ -2083,7 +2083,7 @@ STREAM(44): HEADERS            --------&gt;
   :scheme = https
   :path = /target.example.org/443/
   :authority = proxy.example.org:443
-  Sec-UDP-Timestamps = ?1
+  sec-use-udp-timestamps = ?1
 
 DATAGRAM                        --------&gt;
   Encoded Stream ID = 22
@@ -2091,7 +2091,7 @@ DATAGRAM                        --------&gt;
 
            &lt;--------  STREAM(44): HEADERS
                         :status = 200
-                        Sec-UDP-Timestamps = ?1
+                        sec-use-udp-timestamps = ?1
 
 /* UDP timestamps are supported on this stream */
 
@@ -2105,8 +2105,9 @@ DATAGRAM                        --------&gt;
   Payload = Encapsulated UDP Payload With Timestamp
 
            &lt;--------  DATAGRAM
-                        Encoded Stream ID = 22
-                        Payload = Encapsulated UDP Payload
+                        Encoded Stream ID = 23
+                        Context ID = 2
+                        Payload = Encapsulated UDP Payload With Timestamp
 </pre><a href="#appendix-A.2.1-2" class="pilcrow">¶</a>
 </div>
 </section>
@@ -2128,7 +2129,7 @@ STREAM(44): HEADERS            --------&gt;
   :scheme = https
   :path = /target.example.org/443/
   :authority = proxy.example.org:443
-  Sec-UDP-Timestamps = ?1
+  sec-use-udp-timestamps = ?1
 
 DATAGRAM                        --------&gt;
   Encoded Stream ID = 22
@@ -2163,11 +2164,11 @@ STREAM(44): HEADERS            --------&gt;
   :scheme = https
   :path = /
   :authority = proxy.example.org:443
-  Sec-Use-IP-Compression = ?1
+  sec-use-ip-compression = ?1
 
            &lt;--------  STREAM(44): HEADERS
                         :status = 200
-                        Sec-Use-IP-Compression = ?1
+                        sec-use-ip-compression = ?1
 
 /* Exchange CONNECT-IP configuration information. */
 
@@ -2214,7 +2215,7 @@ STREAM(44): HEADERS            --------&gt;
   :method = webtransport
   :path = /hello
   :authority = webtransport.example.org:443
-  Origin = https://www.example.org:443
+  origin = https://www.example.org:443
 
            &lt;--------  STREAM(44): HEADERS
                         :status = 200
