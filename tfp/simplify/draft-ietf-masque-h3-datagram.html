@@ -1451,9 +1451,10 @@ Context ID:  </dt>
         <dd style="margin-left: 1.5em" id="section-3-3.4">
           <p id="section-3-3.4.1">A variable-length integer indicating the context ID of the datagram (see
 <a href="#datagram-contexts" class="xref">Section 2.1</a>). Whether or not this field is present depends on whether
-the least-significant bit of the Encoded Stream ID, as described above. If the
+the least-significant bit of the Encoded Stream ID is set, as described above. If the
 receiver of a datagram does not support Context IDs, it will drop any datagram
-that contains a context ID.<a href="#section-3-3.4.1" class="pilcrow">¶</a></p>
+that contains a context ID. If the Context ID field is not present, this datagram
+is associated with the default context (which has its Context ID set to 0).<a href="#section-3-3.4.1" class="pilcrow">¶</a></p>
 </dd>
         <dd class="break"></dd>
 <dt id="section-3-3.5">
