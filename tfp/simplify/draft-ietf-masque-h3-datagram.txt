@@ -136,8 +136,8 @@ Table of Contents
       requests, after which Capsules, an end-to-end message, can be
       sent.
 
-      -  Datagram Capsule types Section 4.4 are defined, along with
-         guidance for defining new capsule types.
+      -  Section 4.4 defines Datagram Capsule types, along with guidance
+         for specifying new capsule types.
 
 1.1.  Conventions and Definitions
 
