@@ -1245,13 +1245,10 @@ document defines how to convey datagrams over prior versions of HTTP.<a href="#s
                 <p id="section-toc.1-1.10.2.2.1"><a href="#appendix-A.2" class="xref">A.2</a>.  <a href="#name-connect-udp-with-timestamp-" class="xref">CONNECT-UDP with Timestamp Extension</a></p>
 <ul class="compact toc ulBare ulEmpty">
 <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.10.2.2.2.1">
-                    <p id="section-toc.1-1.10.2.2.2.1.1"><a href="#appendix-A.2.1" class="xref">A.2.1</a>.  <a href="#name-with-delay" class="xref">With Delay</a></p>
+                    <p id="section-toc.1-1.10.2.2.2.1.1"><a href="#appendix-A.2.1" class="xref">A.2.1</a>.  <a href="#name-extension-supported" class="xref">Extension Supported</a></p>
 </li>
                   <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.10.2.2.2.2">
-                    <p id="section-toc.1-1.10.2.2.2.2.1"><a href="#appendix-A.2.2" class="xref">A.2.2</a>.  <a href="#name-successful-optimistic" class="xref">Successful Optimistic</a></p>
-</li>
-                  <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.10.2.2.2.3">
-                    <p id="section-toc.1-1.10.2.2.2.3.1"><a href="#appendix-A.2.3" class="xref">A.2.3</a>.  <a href="#name-optimistic-but-unsupported" class="xref">Optimistic but Unsupported</a></p>
+                    <p id="section-toc.1-1.10.2.2.2.2.1"><a href="#appendix-A.2.2" class="xref">A.2.2</a>.  <a href="#name-extension-unsupported" class="xref">Extension Unsupported</a></p>
 </li>
                 </ul>
 </li>
@@ -2067,13 +2064,14 @@ contain UDP payloads, while contexts established with the
 REGISTER_UDP_WITH_TIMESTAMP_CONTEXT capsule include a timestamp along with the
 UDP payload. A new header, Sec-UDP-Timestamps, indicates support for the
 extension.<a href="#appendix-A.2-1" class="pilcrow">¶</a></p>
-<div id="with-delay">
+<div id="extension-supported">
 <section id="appendix-A.2.1">
-          <h4 id="name-with-delay">
-<a href="#appendix-A.2.1" class="section-number selfRef">A.2.1. </a><a href="#name-with-delay" class="section-name selfRef">With Delay</a>
+          <h4 id="name-extension-supported">
+<a href="#appendix-A.2.1" class="section-number selfRef">A.2.1. </a><a href="#name-extension-supported" class="section-name selfRef">Extension Supported</a>
           </h4>
-<p id="appendix-A.2.1-1">In this instance, the client prefers to wait a round trip to learn whether the
-server supports non-default datagram contexts for the timestamp extension.<a href="#appendix-A.2.1-1" class="pilcrow">¶</a></p>
+<p id="appendix-A.2.1-1">In this instance, the server supports non-default datagram contexts for the
+timestamp extension. The client registers a context for UDP payloads
+with timestamps once it learns that the extension is supported.<a href="#appendix-A.2.1-1" class="pilcrow">¶</a></p>
 <div class="alignLeft art-text artwork" id="appendix-A.2.1-2">
 <pre>
 Client                                             Server
@@ -2086,9 +2084,15 @@ STREAM(44): HEADERS            --------&gt;
   :authority = proxy.example.org:443
   Sec-UDP-Timestamps = ?1
 
+DATAGRAM                        --------&gt;
+  Encoded Stream ID = 22
+  Payload = Encapsulated UDP Payload
+
            &lt;--------  STREAM(44): HEADERS
                         :status = 200
                         Sec-UDP-Timestamps = ?1
+
+/* UDP timestamps are supported on this stream */
 
 STREAM(44): DATA               --------&gt;
   Capsule Type = REGISTER_UDP_WITH_TIMESTAMP_CONTEXT
@@ -2106,16 +2110,13 @@ DATAGRAM                        --------&gt;
 </div>
 </section>
 </div>
-<div id="successful-optimistic">
+<div id="extension-unsupported">
 <section id="appendix-A.2.2">
-          <h4 id="name-successful-optimistic">
-<a href="#appendix-A.2.2" class="section-number selfRef">A.2.2. </a><a href="#name-successful-optimistic" class="section-name selfRef">Successful Optimistic</a>
+          <h4 id="name-extension-unsupported">
+<a href="#appendix-A.2.2" class="section-number selfRef">A.2.2. </a><a href="#name-extension-unsupported" class="section-name selfRef">Extension Unsupported</a>
           </h4>
-<p id="appendix-A.2.2-1">In this instance, the client does not wish to spend a round trip waiting to
-learn whether the server supports the non-default contexts for the
-timestamp extension. It registers its context optimistically in such a way
-that the server will handle its datagram only if the extension is supported.
-In this case, the server does support the extension.<a href="#appendix-A.2.2-1" class="pilcrow">¶</a></p>
+<p id="appendix-A.2.2-1">In this instance, the server does not support non-default datagram contexts
+for the timestamp extension.<a href="#appendix-A.2.2-1" class="pilcrow">¶</a></p>
 <div class="alignLeft art-text artwork" id="appendix-A.2.2-2">
 <pre>
 Client                                             Server
@@ -2128,73 +2129,19 @@ STREAM(44): HEADERS            --------&gt;
   :authority = proxy.example.org:443
   Sec-UDP-Timestamps = ?1
 
-STREAM(44): DATA               --------&gt;
-  Capsule Type = REGISTER_UDP_WITH_TIMESTAMP_CONTEXT
-  Context ID = 2
-
 DATAGRAM                        --------&gt;
-  Encoded Stream ID = 23
-  Context ID = 2
-  Payload = Encapsulated UDP Payload With Timestamp
-
-           &lt;--------  STREAM(44): HEADERS
-                        :status = 200
-                        Sec-UDP-Timestamps = ?1
-
-/* UDP timestamps are supported on this stream */
-
-           &lt;--------  DATAGRAM
-                        Encoded Stream ID = 22
-                        Payload = Encapsulated UDP Payload
-</pre><a href="#appendix-A.2.2-2" class="pilcrow">¶</a>
-</div>
-</section>
-</div>
-<div id="optimistic-but-unsupported">
-<section id="appendix-A.2.3">
-          <h4 id="name-optimistic-but-unsupported">
-<a href="#appendix-A.2.3" class="section-number selfRef">A.2.3. </a><a href="#name-optimistic-but-unsupported" class="section-name selfRef">Optimistic but Unsupported</a>
-          </h4>
-<p id="appendix-A.2.3-1">In this instance, the client does not wish to spend a round trip waiting to
-learn whether the server supports the non-default contexts for the
-timestamp extension. It registers its context optimistically in such a way
-that the server will handle its datagram only if the extension is supported.
-In this case, the server does not support the extension, and the client
-re-transmits its datagram after learning this.<a href="#appendix-A.2.3-1" class="pilcrow">¶</a></p>
-<div class="alignLeft art-text artwork" id="appendix-A.2.3-2">
-<pre>
-Client                                             Server
-
-STREAM(44): HEADERS            --------&gt;
-  :method = CONNECT
-  :protocol = connect-udp
-  :scheme = https
-  :path = /target.example.org/443/
-  :authority = proxy.example.org:443
-  Sec-Use-Datagram-Contexts = ?1
-
-STREAM(44): DATA               --------&gt;
-  Capsule Type = REGISTER_UDP_WITH_TIMESTAMP_CONTEXT
-  Context ID = 2
-
-DATAGRAM                        --------&gt;
-  Encoded Stream ID = 23
-  Context ID = 2
-  Payload = Encapsulated UDP Payload With Timestamp
+  Encoded Stream ID = 22
+  Payload = Encapsulated UDP Payload
 
            &lt;--------  STREAM(44): HEADERS
                         :status = 200
 
 /* UDP timestamps are not supported on this stream */
 
-DATAGRAM                        --------&gt;
-  Encoded Stream ID = 22
-  Payload = Encapsulated UDP Payload
-
            &lt;--------  DATAGRAM
                         Encoded Stream ID = 22
                         Payload = Encapsulated UDP Payload
-</pre><a href="#appendix-A.2.3-2" class="pilcrow">¶</a>
+</pre><a href="#appendix-A.2.2-2" class="pilcrow">¶</a>
 </div>
 </section>
 </div>

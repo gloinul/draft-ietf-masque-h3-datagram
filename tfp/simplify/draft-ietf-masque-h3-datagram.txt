@@ -95,9 +95,8 @@ Table of Contents
    Appendix A.  Examples
      A.1.  CONNECT-UDP
      A.2.  CONNECT-UDP with Timestamp Extension
-       A.2.1.  With Delay
-       A.2.2.  Successful Optimistic
-       A.2.3.  Optimistic but Unsupported
+       A.2.1.  Extension Supported
+       A.2.2.  Extension Unsupported
      A.3.  CONNECT-IP with IP compression
      A.4.  WebTransport
    Acknowledgments
@@ -705,47 +704,12 @@ A.2.  CONNECT-UDP with Timestamp Extension
    capsule include a timestamp along with the UDP payload.  A new
    header, Sec-UDP-Timestamps, indicates support for the extension.
 
-A.2.1.  With Delay
+A.2.1.  Extension Supported
 
-   In this instance, the client prefers to wait a round trip to learn
-   whether the server supports non-default datagram contexts for the
-   timestamp extension.
-
-   Client                                             Server
-
-   STREAM(44): HEADERS            -------->
-     :method = CONNECT
-     :protocol = connect-udp
-     :scheme = https
-     :path = /target.example.org/443/
-     :authority = proxy.example.org:443
-     Sec-UDP-Timestamps = ?1
-
-              <--------  STREAM(44): HEADERS
-                           :status = 200
-                           Sec-UDP-Timestamps = ?1
-
-   STREAM(44): DATA               -------->
-     Capsule Type = REGISTER_UDP_WITH_TIMESTAMP_CONTEXT
-     Context ID = 2
-
-   DATAGRAM                        -------->
-     Encoded Stream ID = 23
-     Context ID = 2
-     Payload = Encapsulated UDP Payload With Timestamp
-
-              <--------  DATAGRAM
-                           Encoded Stream ID = 22
-                           Payload = Encapsulated UDP Payload
-
-A.2.2.  Successful Optimistic
-
-   In this instance, the client does not wish to spend a round trip
-   waiting to learn whether the server supports the non-default contexts
-   for the timestamp extension.  It registers its context optimistically
-   in such a way that the server will handle its datagram only if the
-   extension is supported.  In this case, the server does support the
-   extension.
+   In this instance, the server supports non-default datagram contexts
+   for the timestamp extension.  The client registers a context for UDP
+   payloads with timestamps once it learns that the extension is
+   supported.
 
    Client                                             Server
 
@@ -757,14 +721,9 @@ A.2.2.  Successful Optimistic
      :authority = proxy.example.org:443
      Sec-UDP-Timestamps = ?1
 
-   STREAM(44): DATA               -------->
-     Capsule Type = REGISTER_UDP_WITH_TIMESTAMP_CONTEXT
-     Context ID = 2
-
    DATAGRAM                        -------->
-     Encoded Stream ID = 23
-     Context ID = 2
-     Payload = Encapsulated UDP Payload With Timestamp
+     Encoded Stream ID = 22
+     Payload = Encapsulated UDP Payload
 
               <--------  STREAM(44): HEADERS
                            :status = 200
@@ -772,30 +731,6 @@ A.2.2.  Successful Optimistic
 
    /* UDP timestamps are supported on this stream */
 
-              <--------  DATAGRAM
-                           Encoded Stream ID = 22
-                           Payload = Encapsulated UDP Payload
-
-A.2.3.  Optimistic but Unsupported
-
-   In this instance, the client does not wish to spend a round trip
-   waiting to learn whether the server supports the non-default contexts
-   for the timestamp extension.  It registers its context optimistically
-   in such a way that the server will handle its datagram only if the
-   extension is supported.  In this case, the server does not support
-   the extension, and the client re-transmits its datagram after
-   learning this.
-
-   Client                                             Server
-
-   STREAM(44): HEADERS            -------->
-     :method = CONNECT
-     :protocol = connect-udp
-     :scheme = https
-     :path = /target.example.org/443/
-     :authority = proxy.example.org:443
-     Sec-Use-Datagram-Contexts = ?1
-
    STREAM(44): DATA               -------->
      Capsule Type = REGISTER_UDP_WITH_TIMESTAMP_CONTEXT
      Context ID = 2
@@ -805,14 +740,33 @@ A.2.3.  Optimistic but Unsupported
      Context ID = 2
      Payload = Encapsulated UDP Payload With Timestamp
 
-              <--------  STREAM(44): HEADERS
-                           :status = 200
+              <--------  DATAGRAM
+                           Encoded Stream ID = 22
+                           Payload = Encapsulated UDP Payload
 
-   /* UDP timestamps are not supported on this stream */
+A.2.2.  Extension Unsupported
+
+   In this instance, the server does not support non-default datagram
+   contexts for the timestamp extension.
+
+   Client                                             Server
+
+   STREAM(44): HEADERS            -------->
+     :method = CONNECT
+     :protocol = connect-udp
+     :scheme = https
+     :path = /target.example.org/443/
+     :authority = proxy.example.org:443
+     Sec-UDP-Timestamps = ?1
 
    DATAGRAM                        -------->
      Encoded Stream ID = 22
      Payload = Encapsulated UDP Payload
+
+              <--------  STREAM(44): HEADERS
+                           :status = 200
+
+   /* UDP timestamps are not supported on this stream */
 
               <--------  DATAGRAM
                            Encoded Stream ID = 22
