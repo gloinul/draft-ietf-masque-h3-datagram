@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2021-11-04T01:04:47.215705+00:00",
+  "timestamp": "2021-11-07T01:07:07.063846+00:00",
   "repo": "ietf-wg-masque/draft-ietf-masque-h3-datagram",
   "labels": [
     {
@@ -7966,6 +7966,470 @@
               "body": "nit: line wrap",
               "createdAt": "2021-11-02T22:51:31Z",
               "updatedAt": "2021-11-02T22:52:00Z"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": 113,
+      "id": "PR_kwDODOpKfc4uKnmw",
+      "title": "Simplify by removing formats and registration",
+      "url": "https://github.com/ietf-wg-masque/draft-ietf-masque-h3-datagram/pull/113",
+      "state": "CLOSED",
+      "author": "tfpauly",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "- Remove datagram format registry -- new capsule types can be used instead\r\n- Delegate context ID registration to methods/protocols, which can define new capsule types\r\n- Remove the need for header negotiation to support contexts. Individual methods can define their own headers for negotiation.\r\n- Datagram contexts don't always need to be used, but there's an implicit \"context 0\" which has a format that must be defined by each method. The presence of a context ID in a datagram is encoded in the \"encoded stream ID\".",
+      "createdAt": "2021-11-05T19:40:06Z",
+      "updatedAt": "2021-11-05T19:53:55Z",
+      "baseRepository": "ietf-wg-masque/draft-ietf-masque-h3-datagram",
+      "baseRefName": "main",
+      "baseRefOid": "92b3712c5b06b2d7f1670d9e24a4b41edf9e3f39",
+      "headRepository": "tfpauly/draft-ietf-masque-h3-datagram",
+      "headRefName": "patch-1",
+      "headRefOid": "95c4aea69bedea42ccc8e52e540152bebee21e71",
+      "closedAt": "2021-11-05T19:53:55Z",
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [],
+      "reviews": []
+    },
+    {
+      "number": 114,
+      "id": "PR_kwDODOpKfc4uKpV5",
+      "title": "Simplify by removing formats and registration",
+      "url": "https://github.com/ietf-wg-masque/draft-ietf-masque-h3-datagram/pull/114",
+      "state": "OPEN",
+      "author": "tfpauly",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [
+        "tfpauly"
+      ],
+      "labels": [],
+      "body": "- Remove datagram format registry -- new capsule types can be used instead\r\n- Delegate context ID registration to methods/protocols, which can define new capsule types\r\n- Remove the need for header negotiation to support contexts. Individual methods can define their own headers for negotiation.\r\n- Datagram contexts don't always need to be used, but there's an implicit \"context 0\" which has a format that must be defined by each method. The presence of a context ID in a datagram is encoded in the \"encoded stream ID\".\r\n\r\n[Rendered view of this PR](https://ietf-wg-masque.github.io/draft-ietf-masque-h3-datagram/tfp/simplify/draft-ietf-masque-h3-datagram.html).",
+      "createdAt": "2021-11-05T19:53:46Z",
+      "updatedAt": "2021-11-05T21:04:37Z",
+      "baseRepository": "ietf-wg-masque/draft-ietf-masque-h3-datagram",
+      "baseRefName": "main",
+      "baseRefOid": "92b3712c5b06b2d7f1670d9e24a4b41edf9e3f39",
+      "headRepository": "ietf-wg-masque/draft-ietf-masque-h3-datagram",
+      "headRefName": "tfp/simplify",
+      "headRefOid": "2e0184ea8425c7b751091d9dac1f61cb38a9e2a9",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [],
+      "reviews": [
+        {
+          "id": "PRR_kwDODOpKfc4vo_5K",
+          "commit": {
+            "abbreviatedOid": "5acf7e2"
+          },
+          "author": "DavidSchinazi",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2021-11-05T19:55:41Z",
+          "updatedAt": "2021-11-05T19:57:21Z",
+          "comments": [
+            {
+              "originalPosition": 131,
+              "body": "```suggestion\r\nthe least-significant bit of the Encoded Stream ID is set, as described above. If the\r\n```",
+              "createdAt": "2021-11-05T19:55:41Z",
+              "updatedAt": "2021-11-05T19:57:21Z"
+            },
+            {
+              "originalPosition": 133,
+              "body": "Should we say something like: `If the Context ID field is not present, this datagram is associated with the default context (which has its Context ID set to 0).`",
+              "createdAt": "2021-11-05T19:55:54Z",
+              "updatedAt": "2021-11-05T19:57:21Z"
+            },
+            {
+              "originalPosition": 617,
+              "body": "In this example, the client wants to send the datagram without the extension to make sure that its first packet gets through to the target. Same for the next example below",
+              "createdAt": "2021-11-05T19:56:39Z",
+              "updatedAt": "2021-11-05T19:57:21Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDODOpKfc4vpBOk",
+          "commit": {
+            "abbreviatedOid": "5acf7e2"
+          },
+          "author": "tfpauly",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2021-11-05T20:03:05Z",
+          "updatedAt": "2021-11-05T20:03:05Z",
+          "comments": [
+            {
+              "originalPosition": 133,
+              "body": "```suggestion\r\nthat contains a context ID. If the Context ID field is not present, this datagram\r\nis associated with the default context (which has its Context ID set to 0).\r\n```",
+              "createdAt": "2021-11-05T20:03:05Z",
+              "updatedAt": "2021-11-05T20:03:05Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDODOpKfc4vpAvj",
+          "commit": {
+            "abbreviatedOid": "5acf7e2"
+          },
+          "author": "LPardue",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2021-11-05T20:00:18Z",
+          "updatedAt": "2021-11-05T20:03:56Z",
+          "comments": [
+            {
+              "originalPosition": 22,
+              "body": "```suggestion\r\n  * {{datagram-capsule}} defines Datagram Capsule types, along with guidance\r\n    for specifying new capsule types.\r\n```",
+              "createdAt": "2021-11-05T20:00:18Z",
+              "updatedAt": "2021-11-05T20:03:56Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDODOpKfc4vpCuM",
+          "commit": {
+            "abbreviatedOid": "52f9a1a"
+          },
+          "author": "tfpauly",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2021-11-05T20:11:32Z",
+          "updatedAt": "2021-11-05T20:11:32Z",
+          "comments": [
+            {
+              "originalPosition": 617,
+              "body": "@DavidSchinazi I've updated the examples\u2014now it just has a \"supported extension\" and \"unsupported extension\" case.",
+              "createdAt": "2021-11-05T20:11:32Z",
+              "updatedAt": "2021-11-05T20:11:32Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDODOpKfc4vpE9A",
+          "commit": {
+            "abbreviatedOid": "9a8dd37"
+          },
+          "author": "LPardue",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2021-11-05T20:24:58Z",
+          "updatedAt": "2021-11-05T20:24:59Z",
+          "comments": [
+            {
+              "originalPosition": 359,
+              "body": "maybe qualify \"methods or protocols\" here?",
+              "createdAt": "2021-11-05T20:24:59Z",
+              "updatedAt": "2021-11-05T20:24:59Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDODOpKfc4vpFz1",
+          "commit": {
+            "abbreviatedOid": "9a8dd37"
+          },
+          "author": "LPardue",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2021-11-05T20:29:45Z",
+          "updatedAt": "2021-11-05T20:29:46Z",
+          "comments": [
+            {
+              "originalPosition": 619,
+              "body": "nit: lowercase\r\n\r\n```suggestion\r\n  sec-udp-timestamps = ?1\r\n```",
+              "createdAt": "2021-11-05T20:29:46Z",
+              "updatedAt": "2021-11-05T20:29:46Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDODOpKfc4vpG0z",
+          "commit": {
+            "abbreviatedOid": "9a8dd37"
+          },
+          "author": "LPardue",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2021-11-05T20:35:49Z",
+          "updatedAt": "2021-11-05T20:35:49Z",
+          "comments": [
+            {
+              "originalPosition": 617,
+              "body": "but if this is the support case then wouldn't the server reply with `Encoded Stream ID = 23` and `Payload = Encapsulated UDP Payload With Timestamp`?",
+              "createdAt": "2021-11-05T20:35:49Z",
+              "updatedAt": "2021-11-05T20:35:59Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDODOpKfc4vpGS5",
+          "commit": {
+            "abbreviatedOid": "9a8dd37"
+          },
+          "author": "DavidSchinazi",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2021-11-05T20:32:40Z",
+          "updatedAt": "2021-11-05T20:36:08Z",
+          "comments": [
+            {
+              "originalPosition": 90,
+              "body": "Since we're changing the wire format, we need to bump the value of the SETTING",
+              "createdAt": "2021-11-05T20:32:40Z",
+              "updatedAt": "2021-11-05T20:36:08Z"
+            },
+            {
+              "originalPosition": 466,
+              "body": "Please don't change the value, that breaks backwards compatibility",
+              "createdAt": "2021-11-05T20:33:17Z",
+              "updatedAt": "2021-11-05T20:36:08Z"
+            },
+            {
+              "originalPosition": 588,
+              "body": "```suggestion\r\nREGISTER_UDP_WITH_TIMESTAMP_CONTEXT capsule include a timestamp followed by the\r\n```",
+              "createdAt": "2021-11-05T20:34:21Z",
+              "updatedAt": "2021-11-05T20:36:08Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDODOpKfc4vpI8J",
+          "commit": {
+            "abbreviatedOid": "9a8dd37"
+          },
+          "author": "tfpauly",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2021-11-05T20:48:44Z",
+          "updatedAt": "2021-11-05T20:48:44Z",
+          "comments": [
+            {
+              "originalPosition": 617,
+              "body": "It can! It was just getting long. I'll fix.",
+              "createdAt": "2021-11-05T20:48:44Z",
+              "updatedAt": "2021-11-05T20:48:44Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDODOpKfc4vpLUA",
+          "commit": {
+            "abbreviatedOid": "2e0184e"
+          },
+          "author": "tfpauly",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2021-11-05T21:03:55Z",
+          "updatedAt": "2021-11-05T21:03:56Z",
+          "comments": [
+            {
+              "originalPosition": 90,
+              "body": "Done!",
+              "createdAt": "2021-11-05T21:03:56Z",
+              "updatedAt": "2021-11-05T21:03:56Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDODOpKfc4vpLVE",
+          "commit": {
+            "abbreviatedOid": "2e0184e"
+          },
+          "author": "tfpauly",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2021-11-05T21:04:02Z",
+          "updatedAt": "2021-11-05T21:04:02Z",
+          "comments": [
+            {
+              "originalPosition": 466,
+              "body": "Whoops, fixed",
+              "createdAt": "2021-11-05T21:04:02Z",
+              "updatedAt": "2021-11-05T21:04:02Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDODOpKfc4vpLWM",
+          "commit": {
+            "abbreviatedOid": "2e0184e"
+          },
+          "author": "tfpauly",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2021-11-05T21:04:09Z",
+          "updatedAt": "2021-11-05T21:04:09Z",
+          "comments": [
+            {
+              "originalPosition": 619,
+              "body": "Fixed",
+              "createdAt": "2021-11-05T21:04:09Z",
+              "updatedAt": "2021-11-05T21:04:09Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDODOpKfc4vpLXq",
+          "commit": {
+            "abbreviatedOid": "2e0184e"
+          },
+          "author": "tfpauly",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2021-11-05T21:04:20Z",
+          "updatedAt": "2021-11-05T21:04:21Z",
+          "comments": [
+            {
+              "originalPosition": 359,
+              "body": "Qualified with a long form explanation",
+              "createdAt": "2021-11-05T21:04:21Z",
+              "updatedAt": "2021-11-05T21:04:27Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDODOpKfc4vpLae",
+          "commit": {
+            "abbreviatedOid": "2e0184e"
+          },
+          "author": "tfpauly",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2021-11-05T21:04:37Z",
+          "updatedAt": "2021-11-05T21:04:37Z",
+          "comments": [
+            {
+              "originalPosition": 617,
+              "body": "Fixed",
+              "createdAt": "2021-11-05T21:04:37Z",
+              "updatedAt": "2021-11-05T21:04:37Z"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": 115,
+      "id": "PR_kwDODOpKfc4uLBfZ",
+      "title": "Remove Datagram Format Types",
+      "url": "https://github.com/ietf-wg-masque/draft-ietf-masque-h3-datagram/pull/115",
+      "state": "OPEN",
+      "author": "DavidSchinazi",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "This PR is based on #114 by @tfpauly. It removes datagram format types but still keeps contexts optional for both intermediaries and endpoints.\r\n\r\n[Rendered view of this PR](https://ietf-wg-masque.github.io/draft-ietf-masque-h3-datagram/remove_format_types/draft-ietf-masque-h3-datagram.html).",
+      "createdAt": "2021-11-05T23:33:22Z",
+      "updatedAt": "2021-11-06T16:50:49Z",
+      "baseRepository": "ietf-wg-masque/draft-ietf-masque-h3-datagram",
+      "baseRefName": "main",
+      "baseRefOid": "92b3712c5b06b2d7f1670d9e24a4b41edf9e3f39",
+      "headRepository": "ietf-wg-masque/draft-ietf-masque-h3-datagram",
+      "headRefName": "remove_format_types",
+      "headRefOid": "88a58d334a49dfca50c92c727c51a981ac0c177d",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [],
+      "reviews": [
+        {
+          "id": "PRR_kwDODOpKfc4vpchS",
+          "commit": {
+            "abbreviatedOid": "bfed10a"
+          },
+          "author": "LPardue",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2021-11-06T00:15:22Z",
+          "updatedAt": "2021-11-06T00:16:53Z",
+          "comments": [
+            {
+              "originalPosition": 311,
+              "body": "```suggestion\r\nID with the peer endpoint. Registering a context ID is the action by which an\r\n```",
+              "createdAt": "2021-11-06T00:15:23Z",
+              "updatedAt": "2021-11-06T00:16:53Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDODOpKfc4vpcp2",
+          "commit": {
+            "abbreviatedOid": "bfed10a"
+          },
+          "author": "tfpauly",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2021-11-06T00:18:47Z",
+          "updatedAt": "2021-11-06T00:19:36Z",
+          "comments": [
+            {
+              "originalPosition": 553,
+              "body": "```suggestion\r\n  sec-use-datagram-contexts = ?1\r\n```",
+              "createdAt": "2021-11-06T00:18:47Z",
+              "updatedAt": "2021-11-06T00:19:36Z"
+            },
+            {
+              "originalPosition": 527,
+              "body": "```suggestion\r\n  sec-use-datagram-contexts = ?1\r\n```",
+              "createdAt": "2021-11-06T00:19:06Z",
+              "updatedAt": "2021-11-06T00:19:36Z"
+            },
+            {
+              "originalPosition": 527,
+              "body": "And other locations",
+              "createdAt": "2021-11-06T00:19:33Z",
+              "updatedAt": "2021-11-06T00:19:36Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDODOpKfc4vpsjf",
+          "commit": {
+            "abbreviatedOid": "bfed10a"
+          },
+          "author": "DavidSchinazi",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2021-11-06T16:50:41Z",
+          "updatedAt": "2021-11-06T16:50:49Z",
+          "comments": [
+            {
+              "originalPosition": 553,
+              "body": "This isn't specific to this PR, I'll take care of it in a followup",
+              "createdAt": "2021-11-06T16:50:41Z",
+              "updatedAt": "2021-11-06T16:50:49Z"
+            },
+            {
+              "originalPosition": 527,
+              "body": "This isn't specific to this PR, I'll take care of it in a followup",
+              "createdAt": "2021-11-06T16:50:46Z",
+              "updatedAt": "2021-11-06T16:50:49Z"
             }
           ]
         }
