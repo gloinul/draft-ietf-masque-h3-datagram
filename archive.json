@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2021-11-07T01:07:07.063846+00:00",
+  "timestamp": "2021-11-09T01:05:14.716373+00:00",
   "repo": "ietf-wg-masque/draft-ietf-masque-h3-datagram",
   "labels": [
     {
@@ -2595,6 +2595,97 @@
       "body": "We should revisit [the RELIABLE_DATAGRAM question](https://mailarchive.ietf.org/arch/msg/masque/JImas3YR45txq60pZR2Ab-_LxzQ/).",
       "createdAt": "2021-10-27T21:00:34Z",
       "updatedAt": "2021-10-27T21:00:34Z",
+      "closedAt": null,
+      "comments": []
+    },
+    {
+      "number": 116,
+      "id": "I_kwDODOpKfc4-Zc48",
+      "title": "Emit in order",
+      "url": "https://github.com/ietf-wg-masque/draft-ietf-masque-h3-datagram/issues/116",
+      "state": "OPEN",
+      "author": "ekr",
+      "authorAssociation": "NONE",
+      "assignees": [],
+      "labels": [],
+      "body": "S 4.3 says:\r\n\r\n>    Intermediaries respect the order of opaque CAPSULE frames: if an\r\n   intermediary receives two opaque CAPSULE frames in a given order, it\r\n   MUST forward them in the same order.\r\n\r\nHow does this practically work when the frames are sent over unreliable transport.",
+      "createdAt": "2021-11-07T21:55:17Z",
+      "updatedAt": "2021-11-08T02:51:49Z",
+      "closedAt": null,
+      "comments": [
+        {
+          "author": "LPardue",
+          "authorAssociation": "COLLABORATOR",
+          "body": "The text is intended to avoid needless reordering.\r\nCapsule reception on a stream is ordered. Sending on the next stream can be ordered too. That applies across all HTTP version.\r\n\r\nIn the one case where a Datagram Capsules are specifically being converted to QUIC datagram frames, I would still expect an implementation to be able to send them in order locally. After this, reordering might occur but at least the proxy tried to do the right thing",
+          "createdAt": "2021-11-07T22:00:53Z",
+          "updatedAt": "2021-11-07T22:00:53Z"
+        },
+        {
+          "author": "ekr",
+          "authorAssociation": "NONE",
+          "body": "This does not seem like an appropriate use of a MUST.",
+          "createdAt": "2021-11-07T22:03:29Z",
+          "updatedAt": "2021-11-07T22:03:29Z"
+        },
+        {
+          "author": "LPardue",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Why not?\r\n\r\nAn intermediary that reorders the HTTP bytestream is going to cause problems for people, independent of whether that stream is actual HTTP content or capsules like here. ",
+          "createdAt": "2021-11-07T22:06:26Z",
+          "updatedAt": "2021-11-07T22:06:26Z"
+        },
+        {
+          "author": "ekr",
+          "authorAssociation": "NONE",
+          "body": "I'm talking about the case where they are in datagram frames, in which case this is not an interop requirement.\r\n",
+          "createdAt": "2021-11-07T22:09:54Z",
+          "updatedAt": "2021-11-07T22:09:54Z"
+        },
+        {
+          "author": "LPardue",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Note that the requirement is for opaque capsules and the datagram capsule is defined as transparent, so it has different requirements.\r\n\r\nAside: the terms transparent and opaque capsules are a topic of discussion, but the special case for datagram capsule likely will hold",
+          "createdAt": "2021-11-07T22:21:10Z",
+          "updatedAt": "2021-11-07T22:21:10Z"
+        },
+        {
+          "author": "DavidSchinazi",
+          "authorAssociation": "COLLABORATOR",
+          "body": "@ekr I think you're misunderstanding. This MUST is about capsules, not HTTP Datagrams. Capsules are sent over streams, capsules cannot be sent over datagram frames.",
+          "createdAt": "2021-11-08T02:51:49Z",
+          "updatedAt": "2021-11-08T02:51:49Z"
+        }
+      ]
+    },
+    {
+      "number": 117,
+      "id": "I_kwDODOpKfc4-bNHr",
+      "title": "Acknowledge that Context ID is optional",
+      "url": "https://github.com/ietf-wg-masque/draft-ietf-masque-h3-datagram/issues/117",
+      "state": "OPEN",
+      "author": "ddragana",
+      "authorAssociation": "NONE",
+      "assignees": [],
+      "labels": [],
+      "body": "> Endpoints parse both the Quarter Stream ID field and the Context ID\r\n   field in order to associate the QUIC DATAGRAM frame with a stream and\r\n   context within that stream.  If an endpoint receives a QUIC DATAGRAM\r\n   frame whose payload is too short to allow parsing the Quarter Stream\r\n   ID field, the endpoint MUST treat it as an HTTP/3 connection error of\r\n   type H3_GENERAL_PROTOCOL_ERROR.  If an endpoint receives a QUIC\r\n   DATAGRAM frame whose payload is long enough to allow parsing the\r\n   Quarter Stream ID field but too short to allow parsing the Context ID\r\n   field, the endpoint MUST abruptly terminate the corresponding stream\r\n   with a stream error of type H3_GENERAL_PROTOCOL_ERROR.\r\n\r\n\r\nThis tests talks about paring of Context ID on an endpoint, but Context ID is optional. The text should acknowledge that better.",
+      "createdAt": "2021-11-08T11:12:57Z",
+      "updatedAt": "2021-11-08T11:12:57Z",
+      "closedAt": null,
+      "comments": []
+    },
+    {
+      "number": 118,
+      "id": "I_kwDODOpKfc4-bOOe",
+      "title": "Improve text about multiple CLOSE_DATAGRAM_CONTEXTs",
+      "url": "https://github.com/ietf-wg-masque/draft-ietf-masque-h3-datagram/issues/118",
+      "state": "OPEN",
+      "author": "ddragana",
+      "authorAssociation": "NONE",
+      "assignees": [],
+      "labels": [],
+      "body": "> Endpoints MUST NOT close a Context ID that was not previously\r\n   registered.  Endpoints MUST NOT close a Context ID that has already\r\n   been closed.  If an endpoint receives a CLOSE_DATAGRAM_CONTEXT\r\n   capsule that violates one or more of these requirements, the endpoint\r\n   MUST abruptly terminate the corresponding stream with a stream error\r\n   of type H3_GENERAL_PROTOCOL_ERROR.\r\n\r\n\r\nI think this text should acknowledge that both sides may close a context at the same time and that a CLOSE_DATAGRAM_CONTEXT may be received for a already closed context. This is just a nit, but I think worth mentioning.\r\n\r\n",
+      "createdAt": "2021-11-08T11:17:05Z",
+      "updatedAt": "2021-11-08T11:17:05Z",
       "closedAt": null,
       "comments": []
     }
